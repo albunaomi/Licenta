@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:81817007011:android:31bd03d94f4d779156e016",
+        "mobilesdk_app_id": "1:81817007011:android:541c73f0cbf8cbe656e016",
         "android_client_info": {
-          "package_name": "com.example.cakedream"
+          "package_name": "com.android.application"
         }
       },
       "oauth_client": [
@@ -37,36 +37,7 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:81817007011:android:92d0ff4ba35fe55d56e016",
-        "android_client_info": {
-          "package_name": "com.example.cakes"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "81817007011-8rcfvg7rj3funlmvg1en7gj3rqc6fu95.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyC47qCvPpsFgJtgJvoWdEK2TwUtYbA3Obg"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "81817007011-8rcfvg7rj3funlmvg1en7gj3rqc6fu95.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:81817007011:android:7639c0ef14155a8e56e016",
+        "mobilesdk_app_id": "1:81817007011:android:f83b0dc13ac9d95d56e016",
         "android_client_info": {
           "package_name": "com.example.diana.dreamcakes"
         }
@@ -103,12 +74,20 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:81817007011:android:b32c40fc6a0d066056e016",
+        "mobilesdk_app_id": "1:81817007011:android:bb7441c877e85e9456e016",
         "android_client_info": {
-          "package_name": "com.example.dreamcakes"
+          "package_name": "com.example.diana.test"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "81817007011-hkr3crv94a7j4a9ustp4ct4uqd01brhp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.diana.test",
+            "certificate_hash": "da18a2c6fa0f963e9b7a815cace2d7203b9db894"
+          }
+        },
         {
           "client_id": "81817007011-8rcfvg7rj3funlmvg1en7gj3rqc6fu95.apps.googleusercontent.com",
           "client_type": 3

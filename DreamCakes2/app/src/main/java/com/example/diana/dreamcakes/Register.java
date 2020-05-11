@@ -85,56 +85,36 @@ public class Register extends AppCompatActivity {
                 }
                 progressBar.setVisibility(View.VISIBLE);
 
-                final User newUser=new User(
-                        fullName,
-                        userName,
-                        sEmail,
-                        phone
-                );
-                databaseReference.push().setValue(newUser);
-              //  databaseReference.child(newUser.getFullName()).setValue(newUser);
                 Toast.makeText(Register.this, "User Created", Toast.LENGTH_SHORT).show();
-               /*fAuth.createUserWithEmailAndPassword(sEmail, password)
-                        .addOnCompleteListener(Register.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    final User newUser=new User(
-                                            fullName,
-                                            userName,
-                                            sEmail,
-                                            phone
-                                    );
-
-                                    FirebaseDatabase.getInstance().getReference("User").addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                            if(dataSnapshot.child(sEmail).exists()){
-                                                Toast.makeText(Register.this, "Email already register", Toast.LENGTH_SHORT).show();
-                                            }
-                                            else {
-
-                                                databaseReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(newUser);
-                                                Toast.makeText(Register.this, "User Created", Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-
-                                        }
-
-
-                                    });
-                                } else {
-                                   Toast.makeText(Register.this, "Error"+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                    progressBar.setVisibility(View.GONE);
+                FirebaseAuth.getInstance().createUserWithEmailAndPassword(sEmail, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            final User newUser = new User(
+                                    fullName,
+                                    userName,
+                                    sEmail,
+                                    phone
+                            );
+                            FirebaseDatabase.getInstance().getReference("User")
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .setValue(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Toast.makeText(Register.this, "User Created", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(getApplicationContext(),Home.class));
 
                                 }
+                            });
+                        } else {
+                            Toast.makeText(Register.this, "Error" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            progressBar.setVisibility(View.GONE);
 
-                            }
-                        });*/
+                        }
+
+
+                    }
+                });
             }
         });
         btn_login.setOnClickListener(new View.OnClickListener() {
