@@ -44,7 +44,8 @@ public class Home extends AppCompatActivity
 
         //init Firebase
         database=FirebaseDatabase.getInstance();
-        category=database.getReference("Categorii");
+        category=database.getReference().child("Category");
+        int dim = category.toString().length();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -66,33 +67,34 @@ public class Home extends AppCompatActivity
 
         //det name for user
         View headerView=navigationView.getHeaderView(0);
-        //txtName=(TextView)findViewById(R.id.user_profile_name);
+        //txtName=(TextView)heasderView.findViewById(R.id.user_profile_name);
         // txtName.setText(Common.currentUser.getFullName());
 
         //load menu
-        recycler_menu=(RecyclerView)findViewById(R.id.category);
+        recycler_menu=(RecyclerView)findViewById(R.id.recycler_menu);
         recycler_menu.setHasFixedSize(true);
         layoutManager=new LinearLayoutManager(this);
         recycler_menu.setLayoutManager(layoutManager);
 
-        loadMenu();
+        loadMenu( );
     }
     private void loadMenu() {
         FirebaseRecyclerAdapter<Category, MenuViewHolder> adapter= new FirebaseRecyclerAdapter<Category, MenuViewHolder>(Category.class,R.layout.menu,MenuViewHolder.class,category) {
             @Override
-            protected void populateViewHolder(MenuViewHolder menuViewHolder, Category category, int i) {
-
-                menuViewHolder.textMenuName.setText(category.getName());
-                Picasso.with(getBaseContext()).load(category.getImage()).into(menuViewHolder.image);
-                 final Category clickItem=category;
-                menuViewHolder.setItemClickListener(new ItemClickListener() {
+            protected void populateViewHolder(MenuViewHolder viewHolder, Category model, int position) {
+                viewHolder.textMenuName.setText(model.getName());
+                Picasso.with(getBaseContext()).load(model.getImage()).into(viewHolder.image);
+                final Category clickItem=model;
+                viewHolder.setItemClickListener(new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
                         Toast.makeText(Home.this,""+clickItem.getName(),Toast.LENGTH_SHORT).show();
                     }
                 });
+
             }
         };
+
         recycler_menu.setAdapter(adapter);
     }
 
@@ -128,7 +130,6 @@ public class Home extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_categories) {
-            startActivity(new Intent(getApplicationContext(),Home.class));
         } else if (id == R.id.nav_cart) {
 
         } else if (id == R.id.nav_fav) {
