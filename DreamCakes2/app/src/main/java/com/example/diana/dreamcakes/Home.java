@@ -1,6 +1,5 @@
 package com.example.diana.dreamcakes;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.diana.dreamcakes.Interface.ItemClickListener;
-import com.example.diana.dreamcakes.ViewHolder.MenuViewHolder;
+import com.example.diana.dreamcakes.ViewHolder.CategoryViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -73,15 +72,15 @@ public class Home extends AppCompatActivity
         //load menu
         recycler_menu=(RecyclerView)findViewById(R.id.recycler_menu);
         recycler_menu.setHasFixedSize(true);
-        layoutManager=new LinearLayoutManager(this);
+        layoutManager=new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
         recycler_menu.setLayoutManager(layoutManager);
 
         loadMenu( );
     }
     private void loadMenu() {
-        FirebaseRecyclerAdapter<Category, MenuViewHolder> adapter= new FirebaseRecyclerAdapter<Category, MenuViewHolder>(Category.class,R.layout.menu,MenuViewHolder.class,category) {
+        FirebaseRecyclerAdapter<Category, CategoryViewHolder> adapter= new FirebaseRecyclerAdapter<Category, CategoryViewHolder>(Category.class,R.layout.menu,CategoryViewHolder.class,category) {
             @Override
-            protected void populateViewHolder(MenuViewHolder viewHolder, Category model, int position) {
+            protected void populateViewHolder(CategoryViewHolder viewHolder, Category model, int position) {
                 viewHolder.textMenuName.setText(model.getName());
                 Picasso.with(getBaseContext()).load(model.getImage()).into(viewHolder.image);
                 final Category clickItem=model;

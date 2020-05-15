@@ -62,11 +62,6 @@ public class Login extends AppCompatActivity {
                     return;
                 }
 
-                if(parola.length()<6){
-                    password.setError("Password must be 6 or more characters.");
-                    return;
-                }
-
                 progressBar.setVisibility(View.VISIBLE);
 
                 fAuth.signInWithEmailAndPassword(sEmail,parola).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -78,7 +73,7 @@ public class Login extends AppCompatActivity {
                             //Common.currentUser= new User(name);
                             startActivity(new Intent(getApplicationContext(),Home.class));
                         }else{
-                            Toast.makeText(Login.this, "Error"+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Login.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.GONE);
                         }
 
@@ -100,7 +95,7 @@ public class Login extends AppCompatActivity {
                 final EditText resetMail=new EditText(v.getContext());
                 AlertDialog.Builder passwordAlertDialog=new AlertDialog.Builder(v.getContext());
                 passwordAlertDialog.setTitle("Reset Passowrd");
-                passwordAlertDialog.setMessage("Enter Your Email To REcived Reset Link ");
+                passwordAlertDialog.setMessage("Enter Your Email To Recived Reset Link ");
                 passwordAlertDialog.setView(resetMail);
 
                 passwordAlertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
