@@ -1,8 +1,10 @@
 package com.example.diana.dreamcakes;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.diana.dreamcakes.Interface.ItemClickListener;
+import com.example.diana.dreamcakes.Model.Category;
 import com.example.diana.dreamcakes.ViewHolder.CategoryViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +36,7 @@ public class Home extends AppCompatActivity
 
     RecyclerView recycler_menu;
     RecyclerView.LayoutManager layoutManager;
+    FirebaseRecyclerAdapter<Category, CategoryViewHolder> adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,13 +76,13 @@ public class Home extends AppCompatActivity
         //load menu
         recycler_menu=(RecyclerView)findViewById(R.id.recycler_menu);
         recycler_menu.setHasFixedSize(true);
-        layoutManager=new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
+        layoutManager=new GridLayoutManager(this,2);
         recycler_menu.setLayoutManager(layoutManager);
 
         loadMenu( );
     }
     private void loadMenu() {
-        FirebaseRecyclerAdapter<Category, CategoryViewHolder> adapter= new FirebaseRecyclerAdapter<Category, CategoryViewHolder>(Category.class,R.layout.menu,CategoryViewHolder.class,category) {
+        adapter= new FirebaseRecyclerAdapter<Category, CategoryViewHolder>(Category.class,R.layout.menu,CategoryViewHolder.class,category) {
             @Override
             protected void populateViewHolder(CategoryViewHolder viewHolder, Category model, int position) {
                 viewHolder.textMenuName.setText(model.getName());
@@ -87,7 +91,9 @@ public class Home extends AppCompatActivity
                 viewHolder.setItemClickListener(new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
-                        Toast.makeText(Home.this,""+clickItem.getName(),Toast.LENGTH_SHORT).show();
+                        Intent cakeList=new Intent(Home.this,CakeList.class);
+                        cakeList.putExtra("CategoryId",adapter.getRef(position).getKey());
+                        startActivity(cakeList);
                     }
                 });
 
