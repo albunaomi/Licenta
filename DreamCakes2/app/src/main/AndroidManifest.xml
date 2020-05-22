@@ -31,7 +31,8 @@
             android:name=".Register"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".CakeList" />
-        <activity android:name=".CakesDetail"></activity>
+        <activity android:name=".CakesDetail" />
+        <activity android:name=".Cart"></activity>
     </application>
 
 </manifest>
