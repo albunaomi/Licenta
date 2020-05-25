@@ -22,8 +22,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class Login extends AppCompatActivity {
 
@@ -33,6 +36,7 @@ public class Login extends AppCompatActivity {
     TextView registerBtn,forgotTextLink;
     ProgressBar progressBar;
     FirebaseAuth fAuth;
+    String name,phone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +51,7 @@ public class Login extends AppCompatActivity {
         forgotTextLink=findViewById(R.id.forgotPass);
 
         //init Firebase
-        FirebaseDatabase database=FirebaseDatabase.getInstance();
-        final DatabaseReference table_user=database.getReference("User");
+
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,7 +76,7 @@ public class Login extends AppCompatActivity {
                         if(task.isSuccessful()){
                             Toast.makeText(Login.this, "Login succesfuly", Toast.LENGTH_SHORT).show();
                             FirebaseUser user=fAuth.getCurrentUser();
-                            Common.currentUser= new User(user.getDisplayName(),user.getEmail(),user.getPhoneNumber());
+                            setCurrentUser(user);
                             startActivity(new Intent(getApplicationContext(),Home.class));
                         }else{
                             Toast.makeText(Login.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -132,4 +135,25 @@ public class Login extends AppCompatActivity {
         });
 
     }
-}
+    public void setCurrentUser(FirebaseUser user){
+
+        final FirebaseDatabase database=FirebaseDatabase.getInstance();
+        final DatabaseReference table_user=database.getReference("User");
+        final String uid=user.getUid();
+        table_user.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User u=dataSnapshot.child(uid).getValue(User.class);
+               Common.currentUser=u;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(getApplicationContext(),"Error"+ databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
+    }
+

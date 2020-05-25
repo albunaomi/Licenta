@@ -15,7 +15,7 @@ import com.example.diana.dreamcakes.R;
 public class CakeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     public TextView cake_name, price;
-    public ImageView image;
+    public ImageView image,fav_img,cart_img;
     private ItemClickListener itemClickListener;
 
     public void setItemClickListener(ItemClickListener itemClickListener) {
@@ -27,6 +27,9 @@ public class CakeViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         cake_name=(TextView)itemView.findViewById(R.id.cake_name);
         image= (ImageView)itemView.findViewById(R.id.cake_image);
         price=(TextView)itemView.findViewById(R.id.price);
+        fav_img=(ImageView)itemView.findViewById(R.id.btn_favorite);
+        cart_img=(ImageView)itemView.findViewById(R.id.btn_cart);
+
         itemView.setOnClickListener(this);
     }
 

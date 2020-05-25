@@ -2,6 +2,7 @@ package com.example.diana.dreamcakes.Model;
 
 
 public class CartItem {
+    private int ID;
     private String CakeId;
     private String CakeName;
     private String CakeImage;
@@ -17,6 +18,23 @@ public class CartItem {
         CakeImage = cakeImage;
         Price = price;
         Quantity = quantity;
+    }
+
+    public CartItem(int ID, String cakeId, String cakeName, String cakeImage, String price, String quantity) {
+        this.ID = ID;
+        CakeId = cakeId;
+        CakeName = cakeName;
+        CakeImage = cakeImage;
+        Price = price;
+        Quantity = quantity;
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     public String getCakeId() {

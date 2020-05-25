@@ -25,6 +25,22 @@ public class Request {
         return phone;
     }
 
+    public String getTotal() {
+        return total;
+    }
+
+    public void setTotal(String total) {
+        this.total = total;
+    }
+
+    public List<CartItem> getOrder() {
+        return order;
+    }
+
+    public void setOrder(List<CartItem> order) {
+        this.order = order;
+    }
+
     public void setPhone(String phone) {
         this.phone = phone;
     }
