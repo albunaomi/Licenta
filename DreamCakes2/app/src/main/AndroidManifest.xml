@@ -21,7 +21,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".Login"  android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Login"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="preloaded_fonts"
@@ -30,10 +32,19 @@
         <activity
             android:name=".Home"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".CakeList"   android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".CakesDetail"   android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Cart"   android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".FavoriteList"   android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".CakeList"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CakesDetail"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Cart"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".FavoriteList"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Order"></activity>
     </application>
 
 </manifest>

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="#DFD8DC"
+    android:background="@color/colorAccent"
     tools:context="com.example.diana.dreamcakes.Cart">
 
     <android.support.v7.widget.RecyclerView

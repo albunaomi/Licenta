@@ -7,15 +7,13 @@ android:layout_height="match_parent"
 android:orientation="vertical"
 android:padding="16dp"
     android:id="@+id/rootLayout"
-android:background="#DFD8DC"
+android:background="@color/colorAccent"
 tools:context="com.example.diana.dreamcakes.FavoriteList">
 
 <android.support.v7.widget.RecyclerView
     android:id="@+id/recycler_fav"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     ></android.support.v7.widget.RecyclerView>
 
 

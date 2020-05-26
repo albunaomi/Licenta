@@ -160,6 +160,7 @@ public class Home extends AppCompatActivity
             startActivity(new Intent(Home.this,FavoriteList.class));
 
         } else if (id == R.id.nav_orders) {
+            startActivity(new Intent(Home.this,Order.class));
 
         } else if (id == R.id.nav_logout) {
             singOut();
