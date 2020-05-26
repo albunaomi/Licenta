@@ -1,12 +1,21 @@
 package com.example.diana.dreamcakes;
 
+import android.graphics.Color;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.example.diana.dreamcakes.Database.Database;
+import com.example.diana.dreamcakes.Helper.RecyclerItemTouchHelper;
+import com.example.diana.dreamcakes.Interface.RecyclerItemTouchHelperListener;
 import com.example.diana.dreamcakes.Model.Favorite;
+import com.example.diana.dreamcakes.ViewHolder.CartAdapter;
+import com.example.diana.dreamcakes.ViewHolder.CartViewHolder;
 import com.example.diana.dreamcakes.ViewHolder.FavoriteAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -14,7 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FavoriteList extends AppCompatActivity {
+public class FavoriteList extends AppCompatActivity implements RecyclerItemTouchHelperListener{
 
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
@@ -24,6 +33,8 @@ public class FavoriteList extends AppCompatActivity {
 
     FavoriteAdapter adapter;
     List<Favorite> favoriteItems=new ArrayList<>();
+
+    RelativeLayout rootLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +46,10 @@ public class FavoriteList extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         layoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        
+        rootLayout=(RelativeLayout)findViewById(R.id.rootLayout) ;
+
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallBack=new RecyclerItemTouchHelper(0,ItemTouchHelper.LEFT,this);
+        new ItemTouchHelper(itemTouchHelperCallBack).attachToRecyclerView(recyclerView);
         loadFavoriteCakes();
     }
 
@@ -43,5 +57,38 @@ public class FavoriteList extends AppCompatActivity {
         favoriteItems=new Database(this).getFavoriteCakes();
         adapter=new FavoriteAdapter(favoriteItems,this);
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadFavoriteCakes();
+    }
+
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+        if(viewHolder instanceof FavoriteAdapter.FavoriteViewHolder){
+            String name=favoriteItems.get(viewHolder.getAdapterPosition()).getCakeName();
+            final Favorite deleteItem=favoriteItems.get(viewHolder.getAdapterPosition());
+            final int deleteIndex=viewHolder.getAdapterPosition();
+
+            adapter.removeItem(deleteIndex);
+            new Database(getBaseContext()).removeFavoriteCake(deleteItem.getCakeId());
+
+
+            Snackbar snackbar=Snackbar.make(rootLayout,name+" removed form favorite",Snackbar.LENGTH_LONG);
+            snackbar.setAction("UNDO",new View.OnClickListener(){
+
+                @Override
+                public void onClick(View v) {
+                    adapter.restoreItem(deleteItem,deleteIndex);
+                    new Database(getBaseContext()).addFavoriteCake(deleteItem);
+                    double total=0;
+
+                }
+            });
+            snackbar.setActionTextColor(Color.YELLOW);
+            snackbar.show();
+        }
     }
 }

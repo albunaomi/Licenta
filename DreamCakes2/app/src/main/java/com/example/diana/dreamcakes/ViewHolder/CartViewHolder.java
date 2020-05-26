@@ -11,9 +11,6 @@ import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.example.diana.dreamcakes.Interface.ItemClickListener;
 import com.example.diana.dreamcakes.R;
 
-/**
- * Created by Diana on 5/25/2020.
- */
 
 public class CartViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
@@ -32,7 +29,7 @@ public class CartViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         image=(ImageView)itemView.findViewById(R.id.item_img);
         quantity=(ElegantNumberButton)itemView.findViewById(R.id.quantity);
         view_background=(RelativeLayout) itemView.findViewById(R.id.view_background);
-        view_foreground=(LinearLayout) itemView.findViewById(R.id.view_foregroaund);
+        view_foreground=(LinearLayout) itemView.findViewById(R.id.view_foreground);
     }
 
     public void setName(TextView name) {

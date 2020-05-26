@@ -1,8 +1,5 @@
 package com.example.diana.dreamcakes.Model;
 
-/**
- * Created by Diana on 5/9/2020.
- */
 
 public class User {
     public User(String fullName, String email,  String phone) {
