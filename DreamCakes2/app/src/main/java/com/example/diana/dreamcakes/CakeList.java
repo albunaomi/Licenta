@@ -1,6 +1,7 @@
 package com.example.diana.dreamcakes;
 
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -8,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.diana.dreamcakes.Common.Common;
 import com.example.diana.dreamcakes.Database.Database;
 import com.example.diana.dreamcakes.Interface.ItemClickListener;
 import com.example.diana.dreamcakes.Model.Cake;
@@ -69,14 +71,15 @@ public class CakeList extends AppCompatActivity {
                 viewHolder.price.setText(model.getPrice());
                 Picasso.with(getBaseContext()).load(model.getImage()).into(viewHolder.image);
 
-                if(localDB.isFavoriteCake(adapter.getRef(position).getKey()))
+                if(localDB.isFavoriteCake(adapter.getRef(position).getKey(),Common.uphone)) {
                     viewHolder.fav_img.setImageResource(R.drawable.ic_favorite_black_24dp);
+                }
 
                 viewHolder.fav_img.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(!localDB.isFavoriteCake(adapter.getRef(position).getKey())){
-                            Favorite f=new Favorite(adapter.getRef(position).getKey(),
+                        if(!localDB.isFavoriteCake(adapter.getRef(position).getKey(),Common.currentUser.getPhone())){
+                            Favorite f=new Favorite(Common.currentUser.getPhone(),adapter.getRef(position).getKey(),
                                     model.getName(),
                                     model.getImage(),
                                     model.getPrice());
@@ -85,18 +88,18 @@ public class CakeList extends AppCompatActivity {
                             Toast.makeText(CakeList.this,""+model.getName()+" was added to Favorites",Toast.LENGTH_SHORT).show();
                         }
                         else{
-                            localDB.removeFavoriteCake(adapter.getRef(position).getKey());
+                            localDB.removeFavoriteCake(adapter.getRef(position).getKey(),Common.currentUser.getPhone());
                             viewHolder.fav_img.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                             Toast.makeText(CakeList.this,""+model.getName()+" was removed to Favorites",Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
 
-
                 viewHolder.cart_img.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         new Database(getBaseContext()).addItemToCart(new CartItem(
+                                Common.currentUser.getPhone(),
                                adapter.getRef(position).getKey(),
                                 model.getName(),
                                 model.getImage(),

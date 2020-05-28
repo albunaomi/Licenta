@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
 import com.example.diana.dreamcakes.Cart;
+import com.example.diana.dreamcakes.Common.Common;
 import com.example.diana.dreamcakes.Database.Database;
 import com.example.diana.dreamcakes.Interface.ItemClickListener;
 import com.example.diana.dreamcakes.Model.CartItem;
@@ -61,7 +62,7 @@ public class CartAdapter extends  RecyclerView.Adapter<CartViewHolder> {
                 cartItem.setQuantity(String.valueOf(newValue));
                 new Database(cart).updateCart(cartItem);
                 double total=0;
-                List<CartItem> items=new Database(cart).getCartItems();
+                List<CartItem> items=new Database(cart).getCartItems(Common.currentUser.getPhone());
                 for(CartItem item:items)
                     total+=(Double.parseDouble(item.getPrice())*(Integer.parseInt(item.getQuantity())));
                 cart.tPrice= String.valueOf(total);

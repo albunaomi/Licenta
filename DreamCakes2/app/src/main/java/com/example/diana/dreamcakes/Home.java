@@ -16,23 +16,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.andremion.counterfab.CounterFab;
 import com.example.diana.dreamcakes.Common.Common;
 import com.example.diana.dreamcakes.Database.Database;
 import com.example.diana.dreamcakes.Interface.ItemClickListener;
 import com.example.diana.dreamcakes.Model.Category;
-import com.example.diana.dreamcakes.Model.User;
 import com.example.diana.dreamcakes.ViewHolder.CategoryViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 public class Home extends AppCompatActivity
@@ -68,7 +62,7 @@ public class Home extends AppCompatActivity
                 startActivity(intent);
             }
         });
-        fab.setCount(new Database(this).getCountCart());
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -86,9 +80,11 @@ public class Home extends AppCompatActivity
         layoutManager=new GridLayoutManager(this,2);
         recycler_menu.setLayoutManager(layoutManager);
 
+
         //det name for user
         View headerView=navigationView.getHeaderView(0);
         txtName=(TextView)headerView.findViewById(R.id.user_profile_name);
+
 
         loadMenu( );
     }
@@ -97,7 +93,8 @@ public class Home extends AppCompatActivity
         adapter= new FirebaseRecyclerAdapter<Category, CategoryViewHolder>(Category.class,R.layout.menu,CategoryViewHolder.class,category) {
             @Override
             protected void populateViewHolder(CategoryViewHolder viewHolder, Category model, int position) {
-                txtName.setText(Common.currentUser.getFullName());
+                fab.setCount(new Database(getBaseContext()).getCountCart(Common.uphone));
+               txtName.setText(Common.name);
                 viewHolder.textMenuName.setText(model.getName());
                 Picasso.with(getBaseContext()).load(model.getImage()).into(viewHolder.image);
                 final Category clickItem=model;
@@ -116,13 +113,13 @@ public class Home extends AppCompatActivity
         recycler_menu.setAdapter(adapter);
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
-        fab.setCount(new Database(this).getCountCart());
+      fab.setCount(new Database(this).getCountCart(Common.uphone));
 
     }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

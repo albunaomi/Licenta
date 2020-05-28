@@ -8,9 +8,7 @@ import android.widget.TextView;
 import com.example.diana.dreamcakes.Interface.ItemClickListener;
 import com.example.diana.dreamcakes.R;
 
-/**
- * Created by Diana on 5/17/2020.
- */
+
 
 public class CakeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 

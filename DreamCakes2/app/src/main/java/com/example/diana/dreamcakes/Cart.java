@@ -27,6 +27,7 @@ import com.example.diana.dreamcakes.Helper.RecyclerItemTouchHelper;
 import com.example.diana.dreamcakes.Interface.RecyclerItemTouchHelperListener;
 import com.example.diana.dreamcakes.Model.CartItem;
 import com.example.diana.dreamcakes.Model.Request;
+import com.example.diana.dreamcakes.Model.User;
 import com.example.diana.dreamcakes.ViewHolder.CartAdapter;
 import com.example.diana.dreamcakes.ViewHolder.CartViewHolder;
 import com.google.firebase.database.DatabaseReference;
@@ -128,7 +129,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
                 databaseReference.child(String.valueOf(System.currentTimeMillis()))
                         .setValue(request);
 
-                new Database(getBaseContext()).cleanCart();
+                new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
                 Toast.makeText(Cart.this,"Order Place",Toast.LENGTH_SHORT).show();
                 finish();
             }
@@ -143,7 +144,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
     }
 
     private void loadCartItems() {
-        cartItems=new Database(this).getCartItems();
+        cartItems=new Database(this).getCartItems(Common.uphone);
         adapter=new CartAdapter(cartItems,this);
         recyclerView.setAdapter(adapter);
 
@@ -169,10 +170,10 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
             final int deleteIndex=viewHolder.getAdapterPosition();
 
             adapter.removeItem(deleteIndex);
-            new Database(getBaseContext()).removeItemFromCart(deleteItem.getCakeId());
+            new Database(getBaseContext()).removeItemFromCart(deleteItem.getCakeId(),Common.currentUser.getPhone());
 
             double total=0;
-            List<CartItem> items=new Database(getBaseContext()).getCartItems();
+            List<CartItem> items=new Database(getBaseContext()).getCartItems(Common.currentUser.getPhone());
             for(CartItem item:items)
                 total+=(Double.parseDouble(item.getPrice())*(Integer.parseInt(item.getQuantity())));
             tPrice= String.valueOf(total);
@@ -186,7 +187,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
                     adapter.restoreItem(deleteItem,deleteIndex);
                     new Database(getBaseContext()).addItemToCart(deleteItem);
                     double total=0;
-                    List<CartItem> items=new Database(getBaseContext()).getCartItems();
+                    List<CartItem> items=new Database(getBaseContext()).getCartItems(Common.currentUser.getPhone());
                     for(CartItem item:items)
                         total+=(Double.parseDouble(item.getPrice())*(Integer.parseInt(item.getQuantity())));
                     tPrice= String.valueOf(total);

@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.andremion.counterfab.CounterFab;
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
+import com.example.diana.dreamcakes.Common.Common;
 import com.example.diana.dreamcakes.Database.Database;
 import com.example.diana.dreamcakes.Model.Cake;
 import com.example.diana.dreamcakes.Model.CartItem;
@@ -27,7 +28,7 @@ public class CakesDetail extends AppCompatActivity {
     TextView cake_name,cake_price,cake_description;
     ImageView image;
     CollapsingToolbarLayout collapsingToolbarLayout;
-    FloatingActionButton btnFavorite;
+  public static FloatingActionButton btnFavorite;
     CounterFab btnCart;
     ElegantNumberButton numberButton;
 
@@ -48,12 +49,14 @@ public class CakesDetail extends AppCompatActivity {
         numberButton=(ElegantNumberButton)findViewById(R.id.number_btn);
         btnCart=(CounterFab) findViewById(R.id.btnCart);
         btnFavorite=(FloatingActionButton)findViewById(R.id.btnFavorite) ;
+
         btnFavorite.setOnClickListener(new View.OnClickListener() {
             Database localDB=new Database(getBaseContext());
             @Override
             public void onClick(View v) {
-                if(!localDB.isFavoriteCake(cakeId)){
+                if(!localDB.isFavoriteCake(cakeId, Common.currentUser.getPhone())){
                     localDB.addFavoriteCake(new Favorite(
+                            Common.currentUser.getPhone(),
                             cakeId,
                             cake.getName(),
                             cake.getImage(),
@@ -62,7 +65,7 @@ public class CakesDetail extends AppCompatActivity {
                     Toast.makeText(CakesDetail.this,""+cake.getName()+" was added to Favorites",Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    localDB.removeFavoriteCake(cakeId);
+                    localDB.removeFavoriteCake(cakeId,Common.currentUser.getPhone());
                     btnFavorite.setImageResource(R.drawable.ic_favorite_border_black_24dp);
                     Toast.makeText(CakesDetail.this,""+cake.getName()+" was removed to Favorites",Toast.LENGTH_SHORT).show();
                 }
@@ -72,16 +75,19 @@ public class CakesDetail extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 new Database(getBaseContext()).addItemToCart(new CartItem(
+                        Common.uphone,
                         cakeId,
                         cake.getName(),
                         cake.getImage(),
                         cake.getPrice(),
                         numberButton.getNumber()));
+
                 Toast.makeText(CakesDetail.this,"Add To Cart",Toast.LENGTH_SHORT).show();
+                btnCart.setCount(new Database(getBaseContext()).getCountCart(Common.uphone));
             }
         });
 
-        btnCart.setCount(new Database(this).getCountCart());
+        btnCart.setCount(new Database(this).getCountCart(Common.uphone));
 
         cake_description=(TextView)findViewById(R.id.description);
         cake_price=(TextView)findViewById(R.id.cake_price);
@@ -99,7 +105,12 @@ public class CakesDetail extends AppCompatActivity {
         }
 
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        btnCart.setCount(new Database(this).getCountCart(Common.uphone));
 
+    }
     private void getDetailCakes(String cakeId) {
         databaseReference.child(cakeId).addValueEventListener(new ValueEventListener() {
             @Override

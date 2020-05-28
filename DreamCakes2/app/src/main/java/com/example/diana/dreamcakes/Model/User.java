@@ -16,6 +16,11 @@ public class User {
     public User() {
 
     }
+    public User(User user){
+        FullName=user.getFullName();
+        Email=user.getEmail();
+        Phone=user.getPhone();
+    }
 
 
     public String getEmail() {

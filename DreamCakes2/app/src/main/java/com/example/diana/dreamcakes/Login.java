@@ -51,6 +51,8 @@ public class Login extends AppCompatActivity {
         forgotTextLink=findViewById(R.id.forgotPass);
 
         //init Firebase
+        final FirebaseDatabase database=FirebaseDatabase.getInstance();
+        final DatabaseReference table_user=database.getReference("User");
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,10 +76,26 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            Toast.makeText(Login.this, "Login succesfuly", Toast.LENGTH_SHORT).show();
                             FirebaseUser user=fAuth.getCurrentUser();
-                            setCurrentUser(user);
+                            final String uid=user.getUid();
+                            table_user.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    User u= new User(dataSnapshot.child(uid).getValue(User.class));
+                                    Common.currentUser=u;
+                                    Common.uphone =u.getPhone();
+                                    Common.name=u.getFullName();
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Toast.makeText(getApplicationContext(),"Error"+ databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+
+                                }
+                            });
+                            Toast.makeText(Login.this, "Login succesfuly", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(),Home.class));
+                            finish();
                         }else{
                             Toast.makeText(Login.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.GONE);
@@ -134,25 +152,6 @@ public class Login extends AppCompatActivity {
             }
         });
 
-    }
-    public void setCurrentUser(FirebaseUser user){
-
-        final FirebaseDatabase database=FirebaseDatabase.getInstance();
-        final DatabaseReference table_user=database.getReference("User");
-        final String uid=user.getUid();
-        table_user.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User u=dataSnapshot.child(uid).getValue(User.class);
-               Common.currentUser=u;
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getApplicationContext(),"Error"+ databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-
-            }
-        });
     }
 
     }

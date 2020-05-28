@@ -2,19 +2,48 @@ package com.example.diana.dreamcakes.Model;
 
 
 public class Favorite {
+    private int ID;
+    private String UserPhone;
     private String CakeId;
     private String Name;
     private String CakeImage;
     private String Price;
 
-    public Favorite(String cakeId, String cakeName, String cakeImage, String price) {
+
+    public Favorite(int ID, String userPhone, String cakeId, String name, String cakeImage, String price) {
+        this.ID = ID;
+        UserPhone = userPhone;
         CakeId = cakeId;
-        Name = cakeName;
+        Name = name;
         CakeImage = cakeImage;
         Price = price;
     }
 
+    public Favorite(String userPhone, String cakeId, String name, String cakeImage, String price) {
+        CakeId = cakeId;
+        Name = name;
+        CakeImage = cakeImage;
+        Price = price;
+        UserPhone = userPhone;
+    }
+
     public Favorite() {
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    public String getUserPhone() {
+        return UserPhone;
+    }
+
+    public void setUserPhone(String userPhone) {
+        UserPhone = userPhone;
     }
 
     public String getCakeId() {

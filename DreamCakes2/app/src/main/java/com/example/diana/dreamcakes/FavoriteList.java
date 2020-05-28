@@ -10,6 +10,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.example.diana.dreamcakes.Common.Common;
 import com.example.diana.dreamcakes.Database.Database;
 import com.example.diana.dreamcakes.Helper.RecyclerItemTouchHelper;
 import com.example.diana.dreamcakes.Interface.RecyclerItemTouchHelperListener;
@@ -54,7 +55,7 @@ public class FavoriteList extends AppCompatActivity implements RecyclerItemTouch
     }
 
     private void loadFavoriteCakes() {
-        favoriteItems=new Database(this).getFavoriteCakes();
+        favoriteItems=new Database(this).getFavoriteCakes(Common.currentUser.getPhone());
         adapter=new FavoriteAdapter(favoriteItems,this);
         recyclerView.setAdapter(adapter);
     }
@@ -73,7 +74,7 @@ public class FavoriteList extends AppCompatActivity implements RecyclerItemTouch
             final int deleteIndex=viewHolder.getAdapterPosition();
 
             adapter.removeItem(deleteIndex);
-            new Database(getBaseContext()).removeFavoriteCake(deleteItem.getCakeId());
+            new Database(getBaseContext()).removeFavoriteCake(deleteItem.getCakeId(), Common.currentUser.getPhone());
 
 
             Snackbar snackbar=Snackbar.make(rootLayout,name+" removed form favorite",Snackbar.LENGTH_LONG);

@@ -34,7 +34,7 @@ public class Order extends AppCompatActivity {
         layoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        loadOrders(Common.currentUser.getPhone());
+        loadOrders(Common.uphone);
     }
 
     private void loadOrders(String phone) {
