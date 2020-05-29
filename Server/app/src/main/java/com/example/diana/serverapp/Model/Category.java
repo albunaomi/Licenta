@@ -1,4 +1,4 @@
-package com.example.diana.dreamcakes.Model;
+package com.example.diana.serverapp.Model;
 
 
 public class Category {

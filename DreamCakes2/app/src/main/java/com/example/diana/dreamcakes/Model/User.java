@@ -6,9 +6,10 @@ public class User {
         FullName = fullName;
         Email = email;
         Phone = phone;
+        IsStaff="false";
     }
 
-    private String FullName,Email,Phone;
+    private String FullName,Email,Phone,IsStaff;
 
     public User(String fullName) {
         FullName = fullName;
@@ -22,6 +23,13 @@ public class User {
         Phone=user.getPhone();
     }
 
+    public String getIsStaff() {
+        return IsStaff;
+    }
+
+    public void setIsStaff(String isStaff) {
+        IsStaff = isStaff;
+    }
 
     public String getEmail() {
         return Email;

@@ -52,7 +52,6 @@ public class Home extends AppCompatActivity
         //init Firebase
         database=FirebaseDatabase.getInstance();
         category=database.getReference().child("Category");
-        int dim = category.toString().length();
 
         fab = (CounterFab) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
