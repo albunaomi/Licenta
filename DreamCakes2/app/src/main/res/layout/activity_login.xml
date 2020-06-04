@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@mipmap/i2"
+    android:background="@drawable/background4"
     android:layout_height="match_parent"
     tools:context="com.example.diana.dreamcakes.Login">
 
@@ -11,113 +11,129 @@
         android:id="@+id/textView"
         android:layout_width="255dp"
         android:layout_height="55dp"
-        android:layout_marginTop="28dp"
-        android:background="@drawable/text_round"
-        android:fontFamily="@font/love_ya_like_a_sister"
-        android:text="Autentificare"
+        android:layout_marginTop="56dp"
+        android:fontFamily="@font/david_libre_medium"
+        android:text="Authentication"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@android:color/white"
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
+    <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/etEmail"
-        android:layout_width="337dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="70dp"
-        android:background="@drawable/text_round"
-        android:ems="10"
-        android:fontFamily="@font/love_ya_like_a_sister"
-        android:hint="  Email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="88dp"
+        android:fontFamily="@font/david_libre_medium"
+        android:hint=" Email"
         android:inputType="textEmailAddress"
-        android:textColor="@color/colorPrimaryDark"
-        android:textColorHint="@color/colorPrimaryDark"
-        android:textSize="24sp"
+        android:textColor='@android:color/white'
+        android:textColorHint='@android:color/white'
+        android:textSize="26sp"
+        app:met_baseColor="@android:color/white"
+        app:met_primaryColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.652"
+        app:met_singleLineEllipsis="true"
+        app:layout_constraintHorizontal_bias="0.757"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-    <EditText
+    <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/etParola"
-        android:layout_width="337dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:background="@drawable/text_round"
-        android:ems="10"
-        android:fontFamily="@font/love_ya_like_a_sister"
-        android:hint="  Parola"
+        android:fontFamily="@font/david_libre_medium"
+        android:hint=" Password"
         android:inputType="textPassword"
-        android:textColor="@color/colorPrimaryDark"
-        android:textColorHint="@color/colorPrimaryDark"
+        android:textColor='@android:color/white'
+        android:textColorHint='@android:color/white'
         android:textSize="24sp"
+        app:met_baseColor="@android:color/white"
+        app:met_primaryColor="@android:color/white"
+        app:met_singleLineEllipsis="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.619"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etEmail" />
 
 
-    <Button
-        android:id="@+id/loginBtn"
-        android:layout_width="201dp"
-        android:layout_height="41dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="56dp"
-        android:background="@drawable/text_round"
-        android:fontFamily="@font/love_ya_like_a_sister"
-        android:text="Intra in cont"
-        android:textAlignment="center"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="24sp"
+    <com.rey.material.widget.CheckBox
+        android:id="@+id/remember"
+        style="@style/Material.Drawable.CheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        android:text="Remember me "
+        android:textColor='@android:color/white'
+        android:textSize="22sp"
+        app:cbd_strokeColor='@android:color/white'
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.163"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etParola" />
 
+    <Button
+        android:id="@+id/loginBtn"
+        android:layout_width="275dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="28dp"
+        android:background="#9a1f40"
+        android:fontFamily="@font/david_libre_medium"
+        android:gravity="center_vertical"
+        android:text="Login"
+        android:textAlignment="center"
+        android:textColor='@android:color/white'
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/remember" />
+
     <TextView
         android:id="@+id/tView"
-        android:layout_width="155dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/text_round"
-        android:fontFamily="@font/love_ya_like_a_sister"
-        android:text="Creare cont"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:fontFamily="@font/david_libre_medium"
+        android:text="New user? Register"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor='@android:color/white'
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loginBtn" />
+
+    <TextView
+        android:id="@+id/forgotPass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/david_libre_medium"
+        android:gravity="center_vertical"
+        android:text="Forgot your password?"
+        android:textAlignment="center"
+        android:textColor='@android:color/white'
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tView" />
 
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"
         android:layout_width="67dp"
         android:layout_height="59dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="20dp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/forgotPass" />
 
-    <TextView
-        android:id="@+id/forgotPass"
-        android:layout_width="120dp"
-        android:layout_height="22dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/text_round"
-        android:fontFamily="@font/love_ya_like_a_sister"
-        android:text="Ai uitat parola?"
-        android:textAlignment="center"
-        android:textColor="@color/colorPrimaryDark"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tView" />
+
 </android.support.constraint.ConstraintLayout>

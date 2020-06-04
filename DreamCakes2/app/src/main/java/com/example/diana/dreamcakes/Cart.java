@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -26,15 +27,27 @@ import com.example.diana.dreamcakes.Database.Database;
 import com.example.diana.dreamcakes.Helper.RecyclerItemTouchHelper;
 import com.example.diana.dreamcakes.Interface.RecyclerItemTouchHelperListener;
 import com.example.diana.dreamcakes.Model.CartItem;
+import com.example.diana.dreamcakes.Model.Notification;
 import com.example.diana.dreamcakes.Model.Request;
+import com.example.diana.dreamcakes.Model.Response;
+import com.example.diana.dreamcakes.Model.Sender;
+import com.example.diana.dreamcakes.Model.Token;
 import com.example.diana.dreamcakes.Model.User;
+import com.example.diana.dreamcakes.Remote.APIService;
 import com.example.diana.dreamcakes.ViewHolder.CartAdapter;
 import com.example.diana.dreamcakes.ViewHolder.CartViewHolder;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperListener {
 
@@ -44,7 +57,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
     FirebaseDatabase database;
     DatabaseReference databaseReference;
 
-     public TextView totalPrice;
+    public TextView totalPrice;
     Button placeOrder;
 
     List<CartItem>  cartItems=new ArrayList<>();
@@ -52,10 +65,14 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
 
     RelativeLayout rootLayout;
     public String tPrice;
+
+    APIService mService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
+
+        mService=Common.getFCMService();
 
         database=FirebaseDatabase.getInstance();
         databaseReference=database.getReference("Requests");
@@ -126,12 +143,14 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
                         tPrice,
                         cartItems);
 
-                databaseReference.child(String.valueOf(System.currentTimeMillis()))
+                String order_number=String.valueOf(System.currentTimeMillis());
+                databaseReference.child(order_number)
                         .setValue(request);
 
+
                 new Database(getBaseContext()).cleanCart(Common.currentUser.getPhone());
-                Toast.makeText(Cart.this,"Order Place",Toast.LENGTH_SHORT).show();
-                finish();
+                sendNotificationOrder(order_number);
+                
             }
         }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
@@ -141,6 +160,51 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
         });
         AlertDialog dialog=alertDialog.create();
         dialog.show();
+    }
+
+    private void sendNotificationOrder(final String order_number) {
+        DatabaseReference tokens=FirebaseDatabase.getInstance().getReference("Tokens");
+        Query data=tokens.orderByChild("isServerTokens").equalTo(true);
+        data.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot postSnapShot:dataSnapshot.getChildren()){
+                    Token serverToken=postSnapShot.getValue(Token.class);
+
+                    Notification notification=new Notification("Dream Cakes","You have new order "+order_number);
+                    Sender content=new Sender(serverToken.getToken(),notification);
+                    mService.sendNotification(content)
+                            .enqueue(new Callback<Response>() {
+                                @Override
+                                public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+                                    if (response.code() == 200) {
+                                        if (response.body().success == 1) {
+                                            Toast.makeText(Cart.this, "Thank you, Order Place", Toast.LENGTH_SHORT);
+                                            finish();
+                                        } else
+                                            Toast.makeText(Cart.this, "Failed", Toast.LENGTH_SHORT);
+
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Response> call, Throwable t) {
+                                    Log.e("ERROR",t.getMessage());
+
+                                }
+                            });
+
+
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void loadCartItems() {

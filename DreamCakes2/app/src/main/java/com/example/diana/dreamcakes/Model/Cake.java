@@ -1,8 +1,5 @@
 package com.example.diana.dreamcakes.Model;
 
-/**
- * Created by Diana on 5/17/2020.
- */
 
 public class Cake {
    private String Name;

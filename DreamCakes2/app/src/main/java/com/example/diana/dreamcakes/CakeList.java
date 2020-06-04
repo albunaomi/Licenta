@@ -64,7 +64,7 @@ public class CakeList extends AppCompatActivity {
 
     private void loadCakes(String categoryId){
         adapter=new FirebaseRecyclerAdapter<Cake, CakeViewHolder>(Cake.class,R.layout.cake_item,
-                CakeViewHolder.class,cakeList.orderByChild("CategoryId").equalTo(categoryId)) {
+                CakeViewHolder.class,cakeList.orderByChild("categoryId").equalTo(categoryId)) {
             @Override
             protected void populateViewHolder(final CakeViewHolder viewHolder, final Cake model, final int position) {
                 viewHolder.cake_name.setText(model.getName());

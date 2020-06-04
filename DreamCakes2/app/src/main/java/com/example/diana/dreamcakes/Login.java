@@ -27,6 +27,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.rey.material.widget.CheckBox;
+
+import io.paperdb.Paper;
 
 public class Login extends AppCompatActivity {
 
@@ -35,6 +38,7 @@ public class Login extends AppCompatActivity {
     Button login;
     TextView registerBtn,forgotTextLink;
     ProgressBar progressBar;
+    CheckBox cbRemember;
     FirebaseAuth fAuth;
     String name,phone;
 
@@ -42,15 +46,18 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        email=findViewById(R.id.etEmail);
-        password=findViewById(R.id.etParola);
-        login=findViewById(R.id.loginBtn);
-        progressBar=findViewById(R.id.progressBar);
-        fAuth=FirebaseAuth.getInstance();
-        registerBtn=findViewById(R.id.tView);
-        forgotTextLink=findViewById(R.id.forgotPass);
+        email=(EditText)findViewById(R.id.etEmail);
+        password=(EditText)findViewById(R.id.etParola);
+        login=(Button)findViewById(R.id.loginBtn);
+        progressBar=( ProgressBar)findViewById(R.id.progressBar);
+        registerBtn=(TextView)findViewById(R.id.tView);
+        forgotTextLink=(TextView)findViewById(R.id.forgotPass);
+        cbRemember=(CheckBox)findViewById(R.id.remember);
+
+        Paper.init(this);
 
         //init Firebase
+        fAuth=FirebaseAuth.getInstance();
         final FirebaseDatabase database=FirebaseDatabase.getInstance();
         final DatabaseReference table_user=database.getReference("User");
 
@@ -59,6 +66,12 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 final String sEmail=email.getText().toString().trim();
                 String parola=password.getText().toString().trim();
+
+                if(cbRemember.isChecked()){
+                    Paper.book().write(Common.USER_KEY,email.getText().toString());
+                    Paper.book().write(Common.PWD_KEY ,password.getText().toString());
+
+                }
 
 
                 if(TextUtils.isEmpty(sEmail)) {
@@ -81,10 +94,17 @@ public class Login extends AppCompatActivity {
                             table_user.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
+
                                     User u= new User(dataSnapshot.child(uid).getValue(User.class));
                                     Common.currentUser=u;
                                     Common.uphone =u.getPhone();
                                     Common.name=u.getFullName();
+                                  //  goToHome();
+                                    Toast.makeText(Login.this, "Login succesfuly", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(getApplicationContext(),Home.class));
+                                    finish();
+
+
                                 }
 
                                 @Override
@@ -93,9 +113,6 @@ public class Login extends AppCompatActivity {
 
                                 }
                             });
-                            Toast.makeText(Login.this, "Login succesfuly", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(),Home.class));
-                            finish();
                         }else{
                             Toast.makeText(Login.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.GONE);

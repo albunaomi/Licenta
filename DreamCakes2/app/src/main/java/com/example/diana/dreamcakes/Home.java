@@ -22,12 +22,16 @@ import com.example.diana.dreamcakes.Common.Common;
 import com.example.diana.dreamcakes.Database.Database;
 import com.example.diana.dreamcakes.Interface.ItemClickListener;
 import com.example.diana.dreamcakes.Model.Category;
+import com.example.diana.dreamcakes.Model.Token;
 import com.example.diana.dreamcakes.ViewHolder.CategoryViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.squareup.picasso.Picasso;
+
+import io.paperdb.Paper;
 
 public class Home extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -72,6 +76,7 @@ public class Home extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        Paper.init(this);
 
         //load menu
         recycler_menu=(RecyclerView)findViewById(R.id.recycler_menu);
@@ -84,9 +89,17 @@ public class Home extends AppCompatActivity
         View headerView=navigationView.getHeaderView(0);
         txtName=(TextView)headerView.findViewById(R.id.user_profile_name);
 
-
         loadMenu( );
+        updateToken(FirebaseInstanceId.getInstance().getToken());
     }
+
+    private void updateToken(String token) {
+        FirebaseDatabase database=FirebaseDatabase.getInstance();
+        DatabaseReference tokens=database.getReference("Tokens");
+        Token data=new Token(token,false);
+        tokens.child(Common.currentUser.getPhone()).setValue(data);
+    }
+
 
     private void loadMenu() {
         adapter= new FirebaseRecyclerAdapter<Category, CategoryViewHolder>(Category.class,R.layout.menu,CategoryViewHolder.class,category) {
@@ -169,6 +182,7 @@ public class Home extends AppCompatActivity
     }
 
     private void singOut() {
+        Paper.book().destroy();
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setTitle("Singout")
                 .setMessage("Do you really want to sign out?")
