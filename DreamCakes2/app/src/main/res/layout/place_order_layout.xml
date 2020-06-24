@@ -42,16 +42,6 @@
         android:layout_height="wrap_content">
 
         <RadioButton
-            android:id="@+id/rbtn_home_address"
-            android:checked="true"
-            android:text="Home Address"
-            android:fontFamily="@font/brawler"
-            android:textSize="18sp"
-            android:textStyle="italic"
-            android:textColor="#4c4c4c"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <RadioButton
             android:id="@+id/rbtn_other_address"
             android:text="Other Address"
             android:fontFamily="@font/brawler"
@@ -60,6 +50,16 @@
             android:textColor="#4c4c4c"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+        <RadioButton
+            android:id="@+id/rbtn_home_address"
+            android:text="Home Address"
+            android:fontFamily="@font/brawler"
+            android:textSize="18sp"
+            android:textStyle="italic"
+            android:textColor="#4c4c4c"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
 
     </RadioGroup>
 
@@ -90,8 +90,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <RadioButton
-            android:id="@+id/rbtn_card"
-            android:text="Card"
+            android:id="@+id/rbtn_paypal"
+            android:text="PayPal"
             android:fontFamily="@font/alegreya_sans_medium"
             android:textSize="18sp"
             android:textStyle="italic"
@@ -101,5 +101,13 @@
 
 
     </RadioGroup>
-
+    <EditText
+        android:id="@+id/edt_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="Choose date"
+        android:inputType="date"
+        />
 </LinearLayout>

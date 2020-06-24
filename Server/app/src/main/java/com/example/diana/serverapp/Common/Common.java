@@ -13,9 +13,13 @@ public class Common {
     public static User currentUser;
 
     public static final int PICK_IMAGE_REQUEST=71;
-    public static final String UPDATE="Update";
+    public static final String UPDATE="Edit";
     public static final String DELETE="Delete";
+    public static String PHONE_TEXT="userPhone";
     private static final String BASE_URL="https://fcm.googleapis.com/";
+
+    public static final String USER_KEY="User";
+    public static final String PWD_KEY="Password";
 
     public  static APIService getFCMClient(){
 
@@ -26,7 +30,9 @@ public class Common {
         if(status.equals("0"))
             return "Placed";
         else if(status.equals("1"))
-            return "On my way";
+            return "Processing";
+        else if(status.equals("2"))
+            return  "On my way";
         else
             return  "Shipped";
     }

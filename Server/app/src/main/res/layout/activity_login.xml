@@ -59,7 +59,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etEmail" />
 
-
+    <com.rey.material.widget.CheckBox
+        android:id="@+id/remember"
+        style="@style/Material.Drawable.CheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        android:text="Remember me "
+        android:textColor='@android:color/white'
+        android:textSize="22sp"
+        app:cbd_strokeColor='@android:color/white'
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.163"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etParola" />
     <Button
         android:id="@+id/loginBtn"
         android:layout_width="275dp"
@@ -74,7 +88,7 @@
         android:textColor='@android:color/white'
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etParola" />
+        app:layout_constraintTop_toBottomOf="@+id/remember" />
 
 
     <TextView

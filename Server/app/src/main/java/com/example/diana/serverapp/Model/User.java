@@ -18,6 +18,12 @@ public class User {
         IsStaff = isStaff;
     }
 
+    public User(User user){
+        FullName=user.getFullName();
+        Email=user.getEmail();
+        Phone=user.getPhone();
+        IsStaff=user.getIsStaff();
+    }
     public String getFullName() {
         return FullName;
     }

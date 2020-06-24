@@ -1,42 +1,55 @@
 package com.example.diana.serverapp;
 
 import android.content.DialogInterface;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.diana.serverapp.Common.Common;
 import com.example.diana.serverapp.Interface.ItemClickListener;
-import com.example.diana.serverapp.Model.Notification;
+import com.example.diana.serverapp.Model.CartItem;
+import com.example.diana.serverapp.Model.DataMessage;
 import com.example.diana.serverapp.Model.Request;
 import com.example.diana.serverapp.Model.Response;
-import com.example.diana.serverapp.Model.Sender;
 import com.example.diana.serverapp.Model.Token;
 import com.example.diana.serverapp.Remote.APIService;
+import com.example.diana.serverapp.ViewHolder.OrderAdapter;
 import com.example.diana.serverapp.ViewHolder.OrderViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.jaredrummler.materialspinner.MaterialSpinner;
+
+
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 
-public class Order extends AppCompatActivity {
+public class Order extends AppCompatActivity{
 
     public RecyclerView recyclerView;
     public  RecyclerView.LayoutManager layoutManager;
+
+    BottomNavigationView bottomNavigationView;
 
     FirebaseRecyclerAdapter<Request,OrderViewHolder> adapter;
     FirebaseDatabase database;
@@ -58,19 +71,41 @@ public class Order extends AppCompatActivity {
         layoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        loadOrders();
-    }
+        bottomNavigationView=(BottomNavigationView)findViewById(R.id.bottom_nav) ;
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+               if(item.getItemId()==R.id.order_new)
+                   loadOrders("0");
+               else if(item.getItemId()==R.id.order_processing)
+                   loadOrders("1");
+                else if(item.getItemId()==R.id.order_shipping)
+                    loadOrders("2");
+                else if(item.getItemId()==R.id.order_shipped)
+                    loadOrders("3");
+                return true;
+            }
+        });
+        loadOrders("0");
 
-    private void loadOrders() {
+        assert getSupportActionBar() != null;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+    }
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
+    }
+    private void loadOrders(String status) {
         adapter=new FirebaseRecyclerAdapter<Request,OrderViewHolder>(
                 Request.class,
                 R.layout.order_item,
                 OrderViewHolder.class,
-                requests
+                requests.orderByChild("status").equalTo(status)
         ){
 
             @Override
-            protected void populateViewHolder(OrderViewHolder viewHolder, Request model, int position) {
+            protected void populateViewHolder(OrderViewHolder viewHolder, final Request model, int position) {
                 viewHolder.orderId.setText(new StringBuilder("Order ID: ").append(adapter.getRef(position).getKey()));
                 viewHolder.orderStatus.setText(new StringBuilder("Status: ").append(Common.convertNrToStatus(model.getStatus())));
                 viewHolder.orderPhone.setText(new StringBuilder("Phone: ").append(model.getPhone()));
@@ -81,6 +116,7 @@ public class Order extends AppCompatActivity {
                 viewHolder.setItemClickListener(new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
+                        showDialog(model.getOrder());
 
                     }
                 });
@@ -91,9 +127,35 @@ public class Order extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    private void showDialog(List<CartItem> order) {
+        View view=LayoutInflater.from(getBaseContext()).inflate(R.layout.layout_order_detail,null);
+
+        AlertDialog.Builder alertDialog=new AlertDialog.Builder(this);
+        alertDialog.setView(view);
+
+        Button btn_ok=(Button)view.findViewById(R.id.btn_ok);
+        RecyclerView recyclerView=(RecyclerView)view.findViewById(R.id.recycler_order_cakes);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager=new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        OrderAdapter orderAdapter=new OrderAdapter(order,this);
+        recyclerView.setAdapter(orderAdapter);
+
+        final AlertDialog dialog=alertDialog.create();
+        dialog.show();
+        dialog.getWindow().setGravity(Gravity.CENTER);
+        btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        if(item.getTitle().equals(Common.UPDATE))
+        if(item.getTitle().equals("Update status"))
         {
             updateOrder(adapter.getRef(item.getOrder()).getKey(),adapter.getItem(item.getOrder()));
         }
@@ -117,7 +179,7 @@ public class Order extends AppCompatActivity {
         View view= LayoutInflater.from(getBaseContext()).inflate(R.layout.update_order,null);
 
        spinner=(MaterialSpinner)view.findViewById(R.id.status);
-       spinner.setItems("Placed","On my way","Shipped");
+       spinner.setItems("Placed","Processing","On my way","Shipped");
 
         alertDialog.setView(view);
         alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
@@ -151,9 +213,13 @@ public class Order extends AppCompatActivity {
                         for(DataSnapshot postSnapShot:dataSnapshot.getChildren()) {
                             Token token = postSnapShot.getValue(Token.class);
 
-                            Notification notification=new Notification("Naomi Diana","Your order "+key+" was updated");
-                            Sender content=new Sender(token.getToken(),notification);
-                            mService.sendNotification(content)
+                          //  Notification notification=new Notification("Naomi Diana","Your order "+key+" was updated");
+                          //  Sender content=new Sender(token.getToken(),notification);
+                            Map<String,String>dataSend=new HashMap<>();
+                            dataSend.put("title","Dream Cakes");
+                            dataSend.put("message","Your order "+key+" was updated");
+                            DataMessage dataMessage=new DataMessage(token.getToken(),dataSend);
+                            mService.sendNotification(dataMessage)
                                     .enqueue(new Callback<Response>() {
                                         @Override
                                         public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
@@ -182,4 +248,5 @@ public class Order extends AppCompatActivity {
                     }
                 });
     }
+
 }

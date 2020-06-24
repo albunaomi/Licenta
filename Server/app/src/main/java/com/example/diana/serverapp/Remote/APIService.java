@@ -2,8 +2,8 @@ package com.example.diana.serverapp.Remote;
 
 
 
+import com.example.diana.serverapp.Model.DataMessage;
 import com.example.diana.serverapp.Model.Response;
-import com.example.diana.serverapp.Model.Sender;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -17,5 +17,5 @@ public interface APIService {
     }
     )
     @POST("fcm/send")
-    Call<Response> sendNotification(@Body Sender body);
+    Call<Response> sendNotification(@Body DataMessage body);
 }

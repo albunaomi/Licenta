@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.diana.dreamcakes.Common.Common;
 import com.example.diana.dreamcakes.Model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -52,93 +53,96 @@ public class Register extends AppCompatActivity {
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String sEmail=txt_email.getText().toString();
-                final String password=txt_password.getText().toString();
-                final String phone=txt_phone.getText().toString();
-                final String fullName=txt_fullName.getText().toString();
+                if (Common.isConnectedToInternet(getBaseContext())) {
+                    final String sEmail = txt_email.getText().toString();
+                    final String password = txt_password.getText().toString();
+                    final String phone = txt_phone.getText().toString();
+                    final String fullName = txt_fullName.getText().toString();
 
-                if(TextUtils.isEmpty(sEmail)) {
-                    txt_email.setError("Email is required.");
-                    return;
-                }
-                if(TextUtils.isEmpty(password)) {
-                    txt_password.setError("Password is required.");
-                    return;
-                }
-                if(TextUtils.isEmpty(fullName)) {
-                    txt_fullName.setError("Name is required.");
-                    return;
-                }
-                if(TextUtils.isEmpty(phone)) {
-                    txt_phone.setError("Phone is required.");
-                    return;
-                }
-
-                if(password.length()<6){
-                    txt_password.setError("Password must be 6 or more characters.");
-                    return;
-                }
-                txt_phone.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                    if (TextUtils.isEmpty(sEmail)) {
+                        txt_email.setError("Email is required.");
+                        return;
+                    }
+                    if (TextUtils.isEmpty(password)) {
+                        txt_password.setError("Password is required.");
+                        return;
+                    }
+                    if (TextUtils.isEmpty(fullName)) {
+                        txt_fullName.setError("Name is required.");
+                        return;
+                    }
+                    if (TextUtils.isEmpty(phone)) {
+                        txt_phone.setError("Phone is required.");
+                        return;
                     }
 
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        String regex = "\\d{10}";
-                        boolean a = txt_phone.toString().matches(regex);
-                        if (txt_phone.getText().toString().length() <= 0) {
-                            txt_phone.setError("Enter your phone number ");
-                        }
-                        else if(!txt_phone.getText().toString().matches(regex)){
-                            txt_phone.setError("Please enter a valid phone number!");
-
-                        }
-                        else {
-                            txt_phone.setError(null);
+                    if (password.length() < 6) {
+                        txt_password.setError("Password must be 6 or more characters.");
+                        return;
+                    }
+                    txt_phone.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
                         }
 
-                    }
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            String regex = "\\d{10}";
+                            boolean a = txt_phone.toString().matches(regex);
+                            if (txt_phone.getText().toString().length() <= 0) {
+                                txt_phone.setError("Enter your phone number ");
+                            } else if (!txt_phone.getText().toString().matches(regex)) {
+                                txt_phone.setError("Please enter a valid phone number!");
 
-                    @Override
-                    public void afterTextChanged(Editable s) {
+                            } else {
+                                txt_phone.setError(null);
 
-                    }
-                });
-
-                progressBar.setVisibility(View.VISIBLE);
-
-
-                FirebaseAuth.getInstance().createUserWithEmailAndPassword(sEmail, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            final User newUser = new User(
-                                    fullName,
-                                    sEmail,
-                                    phone
-                            );
-                            FirebaseDatabase.getInstance().getReference("User")
-                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .setValue(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    Toast.makeText(Register.this, "User Created", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(getApplicationContext(),Home.class));
-
-                                }
-                            });
-                        } else {
-                            Toast.makeText(Register.this,  task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            progressBar.setVisibility(View.GONE);
+                            }
 
                         }
 
+                        @Override
+                        public void afterTextChanged(Editable s) {
 
-                    }
-                });
+                        }
+                    });
+
+                    progressBar.setVisibility(View.VISIBLE);
+
+
+                    FirebaseAuth.getInstance().createUserWithEmailAndPassword(sEmail, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                final User newUser = new User(
+                                        fullName,
+                                        sEmail,
+                                        phone
+                                );
+                                FirebaseDatabase.getInstance().getReference("User")
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .setValue(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Toast.makeText(Register.this, "User Created", Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(getApplicationContext(), Home.class));
+
+                                    }
+                                });
+                            } else {
+                                Toast.makeText(Register.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                progressBar.setVisibility(View.GONE);
+
+                            }
+
+
+                        }
+                    });
+                }else{
+                    Toast.makeText(getApplicationContext(), "Please check your connection!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
         });
         btn_login.setOnClickListener(new View.OnClickListener() {

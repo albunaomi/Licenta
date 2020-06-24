@@ -9,18 +9,49 @@ public class Request {
     private String status;
     private String address;
     private String total;
+    private String paymentMethod;
+    private String date;
+    private String paymentState;
    private List<CartItem> order;
 
     public Request() {
     }
 
-    public Request(String phone, String name, String address, String total, List<CartItem> order) {
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+
+    public Request(String phone, String name, String address, String total, String paymentMethod, String date, String paymentState, List<CartItem> order) {
         this.phone = phone;
         this.name = name;
+        this.status = "0";
         this.address = address;
         this.total = total;
+        this.paymentMethod = paymentMethod;
+        this.date = date;
+        this.paymentState = paymentState;
         this.order = order;
-        this.status="0"; //0=Placed 1=Shipping 2=Shipped
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getPaymentState() {
+        return paymentState;
+    }
+
+    public void setPaymentState(String paymentState) {
+        this.paymentState = paymentState;
     }
 
     public String getPhone() {

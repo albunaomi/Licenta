@@ -3,9 +3,11 @@ package com.example.diana.dreamcakes;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.andremion.counterfab.CounterFab;
 import com.example.diana.dreamcakes.Common.Common;
@@ -25,10 +28,14 @@ import com.example.diana.dreamcakes.Model.Category;
 import com.example.diana.dreamcakes.Model.Token;
 import com.example.diana.dreamcakes.ViewHolder.CategoryViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 
 import io.paperdb.Paper;
@@ -91,6 +98,7 @@ public class Home extends AppCompatActivity
 
         loadMenu( );
         updateToken(FirebaseInstanceId.getInstance().getToken());
+
     }
 
     private void updateToken(String token) {
@@ -105,11 +113,10 @@ public class Home extends AppCompatActivity
         adapter= new FirebaseRecyclerAdapter<Category, CategoryViewHolder>(Category.class,R.layout.menu,CategoryViewHolder.class,category) {
             @Override
             protected void populateViewHolder(CategoryViewHolder viewHolder, Category model, int position) {
-                fab.setCount(new Database(getBaseContext()).getCountCart(Common.uphone));
-               txtName.setText(Common.name);
+                fab.setCount(new Database(getBaseContext()).getCountCart(Common.currentUser.getPhone()));
+               txtName.setText(Common.currentUser.getFullName());
                 viewHolder.textMenuName.setText(model.getName());
                 Picasso.with(getBaseContext()).load(model.getImage()).into(viewHolder.image);
-                final Category clickItem=model;
                 viewHolder.setItemClickListener(new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
@@ -129,7 +136,7 @@ public class Home extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-      fab.setCount(new Database(this).getCountCart(Common.uphone));
+      fab.setCount(new Database(this).getCountCart(Common.currentUser.getPhone()));
 
     }
     @Override
@@ -162,13 +169,16 @@ public class Home extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_categories) {
+        if (id == R.id.nav_home_address) {
+            showHomeAddress();
         } else if (id == R.id.nav_cart) {
             startActivity(new Intent(Home.this,Cart.class));
-        } else if (id == R.id.nav_fav) {
+        } else if (id == R.id.nav_fav)
+        {
             startActivity(new Intent(Home.this,FavoriteList.class));
 
         } else if (id == R.id.nav_orders) {
+
             startActivity(new Intent(Home.this,Order.class));
 
         } else if (id == R.id.nav_logout) {
@@ -179,6 +189,36 @@ public class Home extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void showHomeAddress() {
+        AlertDialog.Builder alertDialog=new AlertDialog.Builder(Home.this);
+        alertDialog.setTitle("Change Home Address");
+        View view= LayoutInflater.from(this).inflate(R.layout.home_address_layout,null);
+        final MaterialEditText address=(MaterialEditText)view.findViewById(R.id.edtHomeAdr);
+
+        alertDialog.setView(view);
+        alertDialog.setPositiveButton("UPDATE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                Common.currentUser.setHomeAddress(address.getText().toString());
+
+                FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                FirebaseDatabase.getInstance().getReference("User")
+                        .child(currentFirebaseUser.getUid())
+                        .setValue(Common.currentUser)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(Home.this, "Update Address Successful", Toast.LENGTH_SHORT);
+                            }
+                        });
+
+            }
+        });
+        alertDialog.show();
     }
 
     private void singOut() {

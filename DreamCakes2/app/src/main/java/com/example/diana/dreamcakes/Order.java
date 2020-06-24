@@ -1,22 +1,30 @@
 package com.example.diana.dreamcakes;
 
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.diana.dreamcakes.Common.Common;
 import com.example.diana.dreamcakes.Interface.ItemClickListener;
+import com.example.diana.dreamcakes.Model.CartItem;
 import com.example.diana.dreamcakes.Model.Request;
+import com.example.diana.dreamcakes.ViewHolder.OrderAdapter;
 import com.example.diana.dreamcakes.ViewHolder.OrderViewHolder;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.List;
 
 public class Order extends AppCompatActivity {
 
@@ -40,10 +48,14 @@ public class Order extends AppCompatActivity {
         layoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        if(getIntent()==null)
-            loadOrders(Common.currentUser.getPhone());
-        else
-            loadOrders(getIntent().getStringExtra("userPhone"));
+        loadOrders(Common.currentUser.getPhone());
+
+        assert getSupportActionBar() != null;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
     }
 
     private void loadOrders(String phone) {
@@ -56,14 +68,15 @@ public class Order extends AppCompatActivity {
         ){
 
             @Override
-            protected void populateViewHolder(OrderViewHolder viewHolder, Request model, final int position) {
+            protected void populateViewHolder(OrderViewHolder viewHolder, final Request model, final int position) {
                 viewHolder.orderId.setText(new StringBuilder("Order ID: ").append(adapter.getRef(position).getKey()));
                 viewHolder.orderStatus.setText(new StringBuilder("Status: ").append(Common.convertNrToStatus(model.getStatus())));
                 viewHolder.orderPhone.setText(new StringBuilder("Phone: ").append(model.getPhone()));
                 viewHolder.orderAddress.setText(new StringBuilder("Address: ").append(model.getAddress()));
-                viewHolder.orderDate.setText(new StringBuilder("Date: ")
+                viewHolder.orderDate.setText(new StringBuilder("Order date: ")
                         .append(Common.getDate(Long.parseLong(adapter.getRef(position).getKey()))));
-
+                viewHolder.deliveryDate.setText(new StringBuilder("Date:")
+                        .append(model.getDate()));
                 viewHolder.cancelOrder.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -76,12 +89,38 @@ public class Order extends AppCompatActivity {
                 viewHolder.setItemClickListener(new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
-
+                        showDialog(model.getOrder());
                     }
                 });
             }
         };
         recyclerView.setAdapter(adapter);
+    }
+
+    private void showDialog(List<CartItem> order) {
+        View view= LayoutInflater.from(getBaseContext()).inflate(R.layout.layout_order_detail,null);
+
+        AlertDialog.Builder alertDialog=new AlertDialog.Builder(this);
+        alertDialog.setView(view);
+
+        Button btn_ok=(Button)view.findViewById(R.id.btn_ok);
+        RecyclerView recyclerView=(RecyclerView)view.findViewById(R.id.recycler_order_cakes);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager=new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        OrderAdapter orderAdapter=new OrderAdapter(order,this);
+        recyclerView.setAdapter(orderAdapter);
+
+        final AlertDialog dialog=alertDialog.create();
+        dialog.show();
+        dialog.getWindow().setGravity(Gravity.CENTER);
+        btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 
     private void cancelOrder(final String key) {

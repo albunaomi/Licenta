@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.diana.serverapp.Common.Common;
@@ -45,7 +46,7 @@ public class CakeList extends AppCompatActivity {
 
     FloatingActionButton fab;
 
-    LinearLayout rootLayout;
+    RelativeLayout rootLayout;
     FirebaseDatabase database;
     DatabaseReference cakeList;
     FirebaseStorage storage;
@@ -73,13 +74,12 @@ public class CakeList extends AppCompatActivity {
         storage=FirebaseStorage.getInstance();
         storageReference=storage.getReference();
 
-
         recyclerView=(RecyclerView)findViewById(R.id.recycler_cakes);
         recyclerView.setHasFixedSize(true);
         layoutManager=new GridLayoutManager(this,2);
         recyclerView.setLayoutManager(layoutManager);
 
-        rootLayout=(LinearLayout)findViewById(R.id.root_layout);
+        rootLayout=(RelativeLayout)findViewById(R.id.root_layout);
         fab=(FloatingActionButton)findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,8 +93,15 @@ public class CakeList extends AppCompatActivity {
         if(!categoryId.isEmpty()&& categoryId!=null){
             loadCakes(categoryId);
         }
+
+        assert getSupportActionBar() != null;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
+    }
     private void loadCakes(String categoryId) {
         adapter=new FirebaseRecyclerAdapter<Cake, CakeViewHolder>(Cake.class,R.layout.cake_item,
                 CakeViewHolder.class,cakeList.orderByChild("categoryId").equalTo(categoryId)) {

@@ -9,7 +9,15 @@ public class User {
         IsStaff="false";
     }
 
-    private String FullName,Email,Phone,IsStaff;
+    public User(String fullName, String email, String phone, String homeAddress) {
+        FullName = fullName;
+        Email = email;
+        Phone = phone;
+        HomeAddress = homeAddress;
+        IsStaff="false";
+    }
+
+    private String FullName,Email,Phone,IsStaff,HomeAddress;
 
     public User(String fullName) {
         FullName = fullName;
@@ -21,6 +29,16 @@ public class User {
         FullName=user.getFullName();
         Email=user.getEmail();
         Phone=user.getPhone();
+        IsStaff=user.getIsStaff();
+        HomeAddress=user.getHomeAddress();
+    }
+
+    public String getHomeAddress() {
+        return HomeAddress;
+    }
+
+    public void setHomeAddress(String homeAddress) {
+        HomeAddress = homeAddress;
     }
 
     public String getIsStaff() {

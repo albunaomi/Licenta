@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardBackgroundColor="@color/cardview_light_background"
-    app:cardElevation="8dp">
+    app:cardElevation="8dp"
+    android:layout_marginBottom="5dp">
 
     <LinearLayout
         android:id="@+id/view_foreground"
@@ -42,6 +43,13 @@
                 android:textStyle="italic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/delivery_date"
+                android:text="Delivery date"
+                android:textSize="15dp"
+                android:textStyle="italic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
             <TextView
                     android:id="@+id/order_status"
@@ -65,10 +73,6 @@
                 android:textStyle="italic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-
-
-
-
 
         </LinearLayout>
         <ImageView

@@ -34,6 +34,12 @@ public class MainActivity extends AppCompatActivity {
         btn_continue=(Button)findViewById(R.id.btn_continue);
 
         Paper.init(this);
+        btn_continue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,Login.class));
+            }
+        });
 
         String user=Paper.book().read(Common.USER_KEY);
         String pwd=Paper.book().read(Common.PWD_KEY);
@@ -42,15 +48,6 @@ public class MainActivity extends AppCompatActivity {
                 login(user,pwd);
 
         }
-        btn_continue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,Login.class));
-            }
-        });
-
-
-
     }
 
     private void login(String user, String pwd) {
@@ -68,8 +65,9 @@ public class MainActivity extends AppCompatActivity {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             User u= new User(dataSnapshot.child(uid).getValue(User.class));
                             Common.currentUser=u;
-                            Common.uphone =u.getPhone();
-                            Common.name=u.getFullName();
+                            Toast.makeText(MainActivity.this, "Login succesfuly", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(getApplicationContext(),Home.class));
+                            finish();
                         }
 
                         @Override
@@ -78,9 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
                         }
                     });
-                    Toast.makeText(MainActivity.this, "Login succesfuly", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(getApplicationContext(),Home.class));
-                    finish();
+
                 }else{
                     Toast.makeText(MainActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 

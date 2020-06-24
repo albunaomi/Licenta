@@ -21,6 +21,7 @@
             android:id="@+id/cake_image"
             android:layout_width="180dp"
             android:layout_height="200dp"
+            android:textAlignment="center"
             android:src="@drawable/i2" />
         <TextView
             android:id="@+id/cake_name"

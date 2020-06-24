@@ -11,7 +11,7 @@ import com.example.diana.dreamcakes.R;
 
 public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-    public TextView  orderId,orderStatus,orderPhone,orderAddress,orderDate;
+    public TextView  orderId,orderStatus,orderPhone,orderAddress,orderDate,deliveryDate;
 
     public  ImageView cancelOrder;
     private ItemClickListener itemClickListener;
@@ -22,6 +22,7 @@ public class OrderViewHolder extends RecyclerView.ViewHolder implements View.OnC
         orderStatus=(TextView)itemView.findViewById(R.id.order_status);
         orderId=(TextView)itemView.findViewById(R.id.order_id);
         orderDate=(TextView)itemView.findViewById(R.id.order_date);
+        deliveryDate=(TextView)itemView.findViewById(R.id.delivery_date);
         cancelOrder=(ImageView)itemView.findViewById(R.id.btn_cancel) ;
 
         itemView.setOnClickListener(this);

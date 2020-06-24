@@ -54,6 +54,13 @@ public class CakeList extends AppCompatActivity {
         if(!categoryId.isEmpty()&& categoryId!=null){
             loadCakes(categoryId);
         }
+
+        assert getSupportActionBar() != null;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
     }
 
     @Override
@@ -71,7 +78,7 @@ public class CakeList extends AppCompatActivity {
                 viewHolder.price.setText(model.getPrice());
                 Picasso.with(getBaseContext()).load(model.getImage()).into(viewHolder.image);
 
-                if(localDB.isFavoriteCake(adapter.getRef(position).getKey(),Common.uphone)) {
+                if(localDB.isFavoriteCake(adapter.getRef(position).getKey(),Common.currentUser.getPhone())) {
                     viewHolder.fav_img.setImageResource(R.drawable.ic_favorite_black_24dp);
                 }
 
@@ -120,7 +127,6 @@ public class CakeList extends AppCompatActivity {
                 });
             }
         };
-
         recyclerView.setAdapter(adapter);
     }
 }

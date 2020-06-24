@@ -27,6 +27,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.rey.material.widget.CheckBox;
+
+import io.paperdb.Paper;
 
 public class Login extends AppCompatActivity {
 
@@ -34,6 +37,7 @@ public class Login extends AppCompatActivity {
     Button login;
     TextView forgotTextLink;
     ProgressBar progressBar;
+    CheckBox cbRemember;
 
     FirebaseDatabase database;
     DatabaseReference table_user;
@@ -42,6 +46,10 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        cbRemember=(CheckBox)findViewById(R.id.remember);
+
+        Paper.init(this);
 
         email=(EditText)findViewById(R.id.etEmail);
         password=(EditText)findViewById(R.id.etParola);
@@ -58,6 +66,11 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 String e = email.getText().toString().trim();
                 String p = password.getText().toString().trim();
+                if(cbRemember.isChecked()){
+                    Paper.book().write(Common.USER_KEY,email.getText().toString());
+                    Paper.book().write(Common.PWD_KEY ,password.getText().toString());
+
+                }
                 signIn(e,p);
 
             }

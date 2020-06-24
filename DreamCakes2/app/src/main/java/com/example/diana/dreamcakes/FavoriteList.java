@@ -52,6 +52,13 @@ public class FavoriteList extends AppCompatActivity implements RecyclerItemTouch
         ItemTouchHelper.SimpleCallback itemTouchHelperCallBack=new RecyclerItemTouchHelper(0,ItemTouchHelper.LEFT,this);
         new ItemTouchHelper(itemTouchHelperCallBack).attachToRecyclerView(recyclerView);
         loadFavoriteCakes();
+
+        assert getSupportActionBar() != null;
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
     }
 
     private void loadFavoriteCakes() {
@@ -84,8 +91,6 @@ public class FavoriteList extends AppCompatActivity implements RecyclerItemTouch
                 public void onClick(View v) {
                     adapter.restoreItem(deleteItem,deleteIndex);
                     new Database(getBaseContext()).addFavoriteCake(deleteItem);
-                    double total=0;
-
                 }
             });
             snackbar.setActionTextColor(Color.YELLOW);

@@ -1,7 +1,7 @@
 package com.example.diana.dreamcakes.Remote;
 
+import com.example.diana.dreamcakes.Model.DataMessage;
 import com.example.diana.dreamcakes.Model.Response;
-import com.example.diana.dreamcakes.Model.Sender;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -15,5 +15,5 @@ public interface APIService {
     }
     )
     @POST("fcm/send")
-    Call<Response> sendNotification(@Body Sender body);
+    Call<Response> sendNotification(@Body DataMessage body);
 }

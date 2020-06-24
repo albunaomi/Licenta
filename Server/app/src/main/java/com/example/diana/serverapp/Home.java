@@ -48,6 +48,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.UUID;
 
+import io.paperdb.Paper;
+
 public class Home extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -75,6 +77,12 @@ public class Home extends AppCompatActivity
 
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
@@ -84,7 +92,7 @@ public class Home extends AppCompatActivity
 
         //init Firebase
         database=FirebaseDatabase.getInstance();
-        category=database.getReference().child("Category");
+        category=database.getReference("Category");
         storage=FirebaseStorage.getInstance();
         storageReference=storage.getReference();
 
@@ -231,7 +239,7 @@ public class Home extends AppCompatActivity
             @Override
             protected void populateViewHolder(CategoryViewHolder viewHolder, Category model, int position) {
                 viewHolder.textMenuName.setText(model.getName());
-                Picasso.with(getBaseContext()).load(model.getImage()).into(viewHolder.image);
+                Picasso.with(Home.this).load(model.getImage()).into(viewHolder.image);
 
                 viewHolder.setItemClickListener(new ItemClickListener() {
                     @Override
@@ -260,25 +268,9 @@ public class Home extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -286,7 +278,10 @@ public class Home extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if(id==R.id.nav_orders)
+        if(id==R.id.nav_todays_orders){
+            startActivity(new Intent(Home.this,TodaysOrders.class));
+        }
+        else if(id==R.id.nav_orders)
         {
             startActivity(new Intent(Home.this,Order.class));
         } else if (id == R.id.nav_logout) {
@@ -301,6 +296,7 @@ public class Home extends AppCompatActivity
     }
 
     private void singOut() {
+        Paper.book().destroy();
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
         builder.setTitle("Singout")
                 .setMessage("Do you really want to sign out?")
@@ -362,7 +358,7 @@ public class Home extends AppCompatActivity
 
     private void updateCategory(final String key, final Category item) {
         AlertDialog.Builder alertDialog=new AlertDialog.Builder(Home.this);
-        alertDialog.setTitle("Update Category");
+        alertDialog.setTitle("Edit Category");
 
         View view= LayoutInflater.from(getBaseContext()).inflate(R.layout.add_category_layout,null);
 

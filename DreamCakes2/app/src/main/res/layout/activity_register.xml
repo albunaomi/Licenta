@@ -102,7 +102,7 @@
         android:layout_width="275dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorPrimary"
         android:fontFamily="@font/david_libre_medium"
         android:gravity="center_vertical"
         android:text="Register"

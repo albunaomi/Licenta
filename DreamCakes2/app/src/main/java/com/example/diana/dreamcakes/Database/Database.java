@@ -30,25 +30,28 @@ public  class Database extends SQLiteAssetHelper {
         SQLiteDatabase database=getReadableDatabase();
         SQLiteQueryBuilder queryBuilder=new SQLiteQueryBuilder();
 
+        final List<CartItem> result= new ArrayList<>();
         String [] sqlSelect={"ID","UserPhone","CakeId","CakeName","CakeImage","Price","Quantity"};
         String sqlTable="[Order]";
 
         queryBuilder.setTables(sqlTable);
-        Cursor cursor=queryBuilder.query(database,sqlSelect,"UserPhone=?",new String[]{uPhone},null,null,null);
+        if(uPhone!=null) {
+            Cursor cursor = queryBuilder.query(database, sqlSelect, "UserPhone=?", new String[]{uPhone}, null, null, null);
 
-        final List<CartItem> result=new ArrayList<>();
-        if(cursor.moveToFirst()){
-            do{
-                result.add((new CartItem(cursor.getInt(cursor.getColumnIndex("ID")),
-                        cursor.getString(cursor.getColumnIndex("UserPhone")),
-                        cursor.getString(cursor.getColumnIndex("CakeId")),
-                        cursor.getString(cursor.getColumnIndex("CakeName")),
-                        cursor.getString(cursor.getColumnIndex("CakeImage")),
-                        cursor.getString(cursor.getColumnIndex("Price")),
-                        cursor.getString(cursor.getColumnIndex("Quantity")))));
-            }while(cursor.moveToNext());
+            if (cursor.moveToFirst()) {
+                do {
+                    result.add((new CartItem(cursor.getInt(cursor.getColumnIndex("ID")),
+                            cursor.getString(cursor.getColumnIndex("UserPhone")),
+                            cursor.getString(cursor.getColumnIndex("CakeId")),
+                            cursor.getString(cursor.getColumnIndex("CakeName")),
+                            cursor.getString(cursor.getColumnIndex("CakeImage")),
+                            cursor.getString(cursor.getColumnIndex("Price")),
+                            cursor.getString(cursor.getColumnIndex("Quantity")))));
+                } while (cursor.moveToNext());
+            }
         }
-        return result;
+            return result;
+
     }
 
     public void addItemToCart(CartItem cartItem){
@@ -126,9 +129,9 @@ public  class Database extends SQLiteAssetHelper {
         return result;
     }
 
-    public boolean isFavoriteCake(String id,String phone){
+    public boolean isFavoriteCake(String cakeId,String phone){
         SQLiteDatabase database=getReadableDatabase();
-        String query=String.format("SELECT * FROM [Favorite] WHERE ID='%s' AND UserPhone='%s'; ",id,phone );
+        String query=String.format("SELECT * FROM [Favorite] WHERE CakeId='%s' AND UserPhone='%s' ; ",cakeId,phone );
         Cursor cursor=database.rawQuery(query,null);
         if(cursor.getCount()<=0){
             cursor.close();
@@ -140,7 +143,8 @@ public  class Database extends SQLiteAssetHelper {
 
     public void updateCart(CartItem cart) {
         SQLiteDatabase database=getReadableDatabase();
-        String query=String.format("UPDATE [Order] SET Quantity= %s WHERE  UserPhone='%s' AND ID='%s';",cart.getQuantity(),cart.getUserPhone(),cart.getID());
+        String query=String.format("UPDATE [Order] SET Quantity= %s WHERE  UserPhone='%s' AND ID='%s';",
+                cart.getQuantity(),cart.getUserPhone(),cart.getID());
         database.execSQL(query);
     }
 }

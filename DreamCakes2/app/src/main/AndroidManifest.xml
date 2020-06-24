@@ -33,17 +33,13 @@
             android:name=".Home"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".CakeList"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".CakeList" />
         <activity
-            android:name=".CakesDetail"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".CakesDetail" />
         <activity
-            android:name=".Cart"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".Cart" />
         <activity
-            android:name=".FavoriteList"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".FavoriteList" />
         <activity android:name=".Order" />
         <service android:name=".Service.FirebaseIdService">
             <intent-filter>
