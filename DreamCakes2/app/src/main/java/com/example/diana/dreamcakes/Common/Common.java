@@ -44,9 +44,10 @@ public class Common {
         if(status.equals("0"))
             return "Placed";
         else if(status.equals("1"))
+            return "Processing";
+        else   if(status.equals("2"))
             return "On my way";
-        else
-            return  "Shipped";
+        else  return  "Shipped";
     }
 
     public static String getDate(long time)

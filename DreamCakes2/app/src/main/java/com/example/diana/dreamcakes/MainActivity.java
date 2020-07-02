@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         btn_continue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Paper.book().destroy();
                 startActivity(new Intent(MainActivity.this,Login.class));
             }
         });
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             User u= new User(dataSnapshot.child(uid).getValue(User.class));
                             Common.currentUser=u;
-                            Toast.makeText(MainActivity.this, "Login succesfuly", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Login succesfuly", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(getApplicationContext(),Home.class));
                             finish();
                         }

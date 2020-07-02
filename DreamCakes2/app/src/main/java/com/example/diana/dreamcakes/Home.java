@@ -85,7 +85,6 @@ public class Home extends AppCompatActivity
 
         Paper.init(this);
 
-        //load menu
         recycler_menu=(RecyclerView)findViewById(R.id.recycler_menu);
         recycler_menu.setHasFixedSize(true);
         layoutManager=new GridLayoutManager(this,2);
@@ -110,7 +109,7 @@ public class Home extends AppCompatActivity
 
 
     private void loadMenu() {
-        adapter= new FirebaseRecyclerAdapter<Category, CategoryViewHolder>(Category.class,R.layout.menu,CategoryViewHolder.class,category) {
+        adapter= new FirebaseRecyclerAdapter<Category, CategoryViewHolder>(Category.class,R.layout.category_item_layout,CategoryViewHolder.class,category) {
             @Override
             protected void populateViewHolder(CategoryViewHolder viewHolder, Category model, int position) {
                 fab.setCount(new Database(getBaseContext()).getCountCart(Common.currentUser.getPhone()));
@@ -147,20 +146,6 @@ public class Home extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -235,10 +220,10 @@ public class Home extends AppCompatActivity
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Common.currentUser=null;
-                FirebaseAuth.getInstance().signOut();
                 Intent intent=new Intent(Home.this,MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
+                FirebaseAuth.getInstance().signOut();
                 finish();
             }
         });

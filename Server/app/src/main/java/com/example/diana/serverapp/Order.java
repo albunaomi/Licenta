@@ -213,8 +213,6 @@ public class Order extends AppCompatActivity{
                         for(DataSnapshot postSnapShot:dataSnapshot.getChildren()) {
                             Token token = postSnapShot.getValue(Token.class);
 
-                          //  Notification notification=new Notification("Naomi Diana","Your order "+key+" was updated");
-                          //  Sender content=new Sender(token.getToken(),notification);
                             Map<String,String>dataSend=new HashMap<>();
                             dataSend.put("title","Dream Cakes");
                             dataSend.put("message","Your order "+key+" was updated");

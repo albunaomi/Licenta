@@ -91,7 +91,7 @@ public class Login extends AppCompatActivity {
                         //extract the mail and send reset link
 
                         String mail = resetMail.getText().toString();
-                        fAuth.sendPasswordResetEmail(mail).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        FirebaseAuth.getInstance().sendPasswordResetEmail(mail).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 Toast.makeText(Login.this, "Reset Link Send To Your Email", Toast.LENGTH_SHORT).show();

@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -64,10 +65,14 @@ public class CakeList extends AppCompatActivity {
     Cake currentItem;
 
     Uri selectedUri;
+
+    SwipeRefreshLayout swipeRefreshLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cake_list);
+
+        swipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipe_to_refresh_cake) ;
 
         database=FirebaseDatabase.getInstance();
         cakeList=database.getReference("Cake");
@@ -90,10 +95,25 @@ public class CakeList extends AppCompatActivity {
 
         if(getIntent()!=null)
             categoryId=getIntent().getStringExtra("CategoryId");
-        if(!categoryId.isEmpty()&& categoryId!=null){
-            loadCakes(categoryId);
-        }
 
+
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                if(!categoryId.isEmpty()&& categoryId!=null){
+                    loadCakes(categoryId);
+                }
+            }
+        });
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                if(!categoryId.isEmpty()&& categoryId!=null){
+                    loadCakes(categoryId);
+                }
+            }
+        });
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -122,6 +142,7 @@ public class CakeList extends AppCompatActivity {
 
         adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     private void addNewCake() {
@@ -149,6 +170,11 @@ public class CakeList extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 if(newCake!=null)
                 {
+                    newCake.setName(edtName.getText().toString());
+                    newCake.setDescription(edtDescription.getText().toString());
+                    newCake.setPrice(edtPrice.getText().toString());
+                    newCake.setCategoryId(categoryId);
+
                     cakeList.push().setValue(newCake);
                     Snackbar.make(rootLayout,"New cake "+newCake.getName()+" was added",Snackbar.LENGTH_SHORT).show();
 
@@ -223,11 +249,8 @@ public class CakeList extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     newCake=new Cake();
-                                    newCake.setName(edtName.getText().toString());
                                     newCake.setImage(uri.toString());
-                                    newCake.setDescription(edtDescription.getText().toString());
-                                    newCake.setPrice(edtPrice.getText().toString());
-                                    newCake.setCategoryId(categoryId);
+
                                 }
                             });
 

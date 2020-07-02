@@ -30,8 +30,6 @@ public class FavoriteList extends AppCompatActivity implements RecyclerItemTouch
     RecyclerView.LayoutManager layoutManager;
 
     FirebaseDatabase database;
-    DatabaseReference databaseReference;
-
     FavoriteAdapter adapter;
     List<Favorite> favoriteItems=new ArrayList<>();
 
@@ -41,7 +39,6 @@ public class FavoriteList extends AppCompatActivity implements RecyclerItemTouch
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorite_list);
         database=FirebaseDatabase.getInstance();
-        databaseReference=database.getReference("Requests");
 
         recyclerView=(RecyclerView)findViewById(R.id.recycler_fav);
         recyclerView.setHasFixedSize(true);

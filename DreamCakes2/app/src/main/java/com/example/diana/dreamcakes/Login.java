@@ -74,7 +74,6 @@ public class Login extends AppCompatActivity {
 
                     }
 
-
                     if (TextUtils.isEmpty(sEmail)) {
                         email.setError("Email is required.");
                         return;
@@ -99,8 +98,7 @@ public class Login extends AppCompatActivity {
                                         User u = new User(dataSnapshot.child(uid).getValue(User.class));
                                         Common.currentUser = u;
                                         //  goToHome();
-                                        Toast.makeText(Login.this, "Login succesfuly", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(getApplicationContext(), Home.class));
+                                      startActivity(new Intent(getApplicationContext(), Home.class));
                                         finish();
 
 

@@ -166,7 +166,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
                             !TextUtils.isEmpty(Common.currentUser.getHomeAddress()))
                         address.setText(Common.currentUser.getHomeAddress());
                     else
-                        Toast.makeText(Cart.this, "Please update your Home Address", Toast.LENGTH_SHORT);
+                        Toast.makeText(getApplicationContext(), "Please update your Home Address", Toast.LENGTH_SHORT);
 
 
                 }
@@ -179,6 +179,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
                showDatePicker();
             }
         });
+
         alertDialog.setView(view);
         alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
@@ -186,12 +187,12 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
 
                 if(address.getText().equals(""))
                 {
-                    Toast.makeText(Cart.this, "Please enter address or Select option address", Toast.LENGTH_SHORT);
+                    Toast.makeText(getBaseContext(), "Please enter address or Select option address", Toast.LENGTH_SHORT);
                 }
 
                 if(!rbtn_cash.isChecked()&&!rbtn_payPal.isChecked())
                 {
-                    Toast.makeText(Cart.this,"Please select Payment option",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(),"Please select Payment option",Toast.LENGTH_SHORT).show();
                     return;
                 }else if(rbtn_payPal.isChecked())
                 {
@@ -314,9 +315,6 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
         for (int i = 0; i < (weeks * 7) ; i = i + 7) {
             sunday = Calendar.getInstance();
             sunday.add(Calendar.DAY_OF_YEAR, (Calendar.SUNDAY - sunday.get(Calendar.DAY_OF_WEEK) + 7 + i));
-            // saturday = Calendar.getInstance();
-            // saturday.add(Calendar.DAY_OF_YEAR, (Calendar.SATURDAY - saturday.get(Calendar.DAY_OF_WEEK) + i));
-            // weekends.add(saturday);
             weekends.add(sunday);
         }
         Calendar[] disabledDays = weekends.toArray(new Calendar[weekends.size()]);
@@ -334,8 +332,6 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
                 for(DataSnapshot postSnapShot:dataSnapshot.getChildren()){
                     Token serverToken=postSnapShot.getValue(Token.class);
 
-                    //Notification notification=new Notification("Dream Cakes","You have new order "+order_number);
-                   // Sender content=new Sender(serverToken.getToken(),notification);
                     Map<String,String> dataSend=new HashMap<>();
                     dataSend.put("title","Dream Cakes");
                     dataSend.put("message","You have new order "+order_number);
@@ -363,10 +359,8 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
 
                                 }
                             });
-
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
@@ -379,9 +373,7 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
         adapter=new CartAdapter(cartItems,this);
         recyclerView.setAdapter(adapter);
 
-        double total=0;
-        for(CartItem item:cartItems)
-           total+=(Double.parseDouble(item.getPrice())*(Integer.parseInt(item.getQuantity())));
+        double total=getTotalPrice();
         tPrice= String.valueOf(total);
         totalPrice.setText(new StringBuilder("Total:").append(total));
 
@@ -391,6 +383,14 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
     protected void onResume() {
         super.onResume();
         loadCartItems();
+    }
+    public double getTotalPrice( )
+    {
+        double total=0;
+        List<CartItem> items=new Database(getBaseContext()).getCartItems(Common.currentUser.getPhone());
+        for(CartItem item:items)
+            total+=(Double.parseDouble(item.getPrice())*(Integer.parseInt(item.getQuantity())));
+        return total;
     }
 
     @Override
@@ -403,10 +403,8 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
             adapter.removeItem(deleteIndex);
             new Database(getBaseContext()).removeItemFromCart(deleteItem.getCakeId(),Common.currentUser.getPhone());
 
-            double total=0;
-            List<CartItem> items=new Database(getBaseContext()).getCartItems(Common.currentUser.getPhone());
-            for(CartItem item:items)
-                total+=(Double.parseDouble(item.getPrice())*(Integer.parseInt(item.getQuantity())));
+             double total=getTotalPrice();
+
             tPrice= String.valueOf(total);
             totalPrice.setText(new StringBuilder("Total:").append(total));
 
@@ -417,12 +415,9 @@ public class Cart extends AppCompatActivity implements RecyclerItemTouchHelperLi
                 public void onClick(View v) {
                     adapter.restoreItem(deleteItem,deleteIndex);
                     new Database(getBaseContext()).addItemToCart(deleteItem);
-                    double total=0;
-                    List<CartItem> items=new Database(getBaseContext()).getCartItems(Common.currentUser.getPhone());
-                    for(CartItem item:items)
-                        total+=(Double.parseDouble(item.getPrice())*(Integer.parseInt(item.getQuantity())));
-                    tPrice= String.valueOf(total);
-                    totalPrice.setText(new StringBuilder("Total:").append(total));
+                    double t=getTotalPrice();
+                    tPrice= String.valueOf(t);
+                    totalPrice.setText(new StringBuilder("Total:").append(t));
                 }
             });
             snackbar.setActionTextColor(Color.YELLOW);

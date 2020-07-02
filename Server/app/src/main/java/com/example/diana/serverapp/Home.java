@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -75,6 +76,7 @@ public class Home extends AppCompatActivity
     Boolean isUpdate=false;
     Category currentItem;
 
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onStart() {
@@ -89,6 +91,8 @@ public class Home extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Menu Management");
         setSupportActionBar(toolbar);
+
+        swipeRefreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipe_to_refresh) ;
 
         //init Firebase
         database=FirebaseDatabase.getInstance();
@@ -116,14 +120,27 @@ public class Home extends AppCompatActivity
         //set name
         View hederView=navigationView.getHeaderView(0);
         name=(TextView)hederView.findViewById(R.id.user_profile_name);
-       // name.setText(Common.currentUser.getFullName());
+        name.setText(Common.currentUser.getFullName());
 
         recycler_menu=(RecyclerView)findViewById(R.id.recycler_menu);
         recycler_menu.setHasFixedSize(true);
         layoutManager=new GridLayoutManager(this,2);
         recycler_menu.setLayoutManager(layoutManager);
 
-        loadMenu();
+        swipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                loadMenu();
+            }
+        });
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                loadMenu();
+            }
+        });
+
 
         updateToken(FirebaseInstanceId.getInstance().getToken());
 
@@ -160,6 +177,7 @@ public class Home extends AppCompatActivity
             public void onClick(DialogInterface dialog, int which) {
                 if(newCategory!=null)
                 {
+                    newCategory.setName(edtName.getText().toString());
                     category.push().setValue(newCategory);
                     Snackbar.make(drawer,"New category "+newCategory.getName()+" was added",Snackbar.LENGTH_SHORT).show();
 
@@ -212,7 +230,8 @@ public class Home extends AppCompatActivity
                            imgFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                @Override
                                public void onSuccess(Uri uri) {
-                                 newCategory=new Category(edtName.getText().toString(),uri.toString());
+                                 newCategory=new Category();
+                                 newCategory.setImage(uri.toString());
                                }
                            });
 
@@ -254,6 +273,8 @@ public class Home extends AppCompatActivity
         adapter.notifyDataSetChanged();
 
         recycler_menu.setAdapter(adapter);
+
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override

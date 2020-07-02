@@ -11,9 +11,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
+import com.example.diana.dreamcakes.CakeList;
+import com.example.diana.dreamcakes.Common.Common;
+import com.example.diana.dreamcakes.Database.Database;
 import com.example.diana.dreamcakes.Interface.ItemClickListener;
+import com.example.diana.dreamcakes.Model.CartItem;
 import com.example.diana.dreamcakes.Model.Favorite;
 import com.example.diana.dreamcakes.R;
 import com.squareup.picasso.Picasso;
@@ -40,12 +45,25 @@ public class FavoriteAdapter extends  RecyclerView.Adapter<FavoriteAdapter.Favor
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FavoriteViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull FavoriteViewHolder holder, final int position) {
         Picasso.with(context).load(favoriteList.get(position).getCakeImage())
                 .into(holder.image);
 
         holder.price.setText(new StringBuilder("RON ").append(favoriteList.get(position).getPrice()));
         holder.name.setText(favoriteList.get(position).getCakeName());
+        holder.add_to_cart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Database(context).addItemToCart(new CartItem(
+                        Common.currentUser.getPhone(),
+                        favoriteList.get(position).getCakeId(),
+                        favoriteList.get(position).getCakeName(),
+                        favoriteList.get(position).getCakeImage(),
+                        favoriteList.get(position).getPrice(),
+                        "1"));
+                Toast.makeText(context,"Add To Cart",Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
@@ -65,7 +83,7 @@ public class FavoriteAdapter extends  RecyclerView.Adapter<FavoriteAdapter.Favor
     public class FavoriteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public TextView name,price;
-        public ImageView image;
+        public ImageView image,add_to_cart;
         private ItemClickListener itemClickListener;
 
        public  RelativeLayout view_background;
@@ -76,6 +94,7 @@ public class FavoriteAdapter extends  RecyclerView.Adapter<FavoriteAdapter.Favor
             name=(TextView)itemView.findViewById(R.id.item_name);
             price=(TextView)itemView.findViewById(R.id.item_price);
             image=(ImageView)itemView.findViewById(R.id.item_img);
+            add_to_cart=(ImageView)itemView.findViewById(R.id.btn_add_to_cart);
             view_background=(RelativeLayout) itemView.findViewById(R.id.view_background);
             view_foreground=(LinearLayout) itemView.findViewById(R.id.view_foreground);
         }

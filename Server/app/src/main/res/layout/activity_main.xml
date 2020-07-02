@@ -24,7 +24,7 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/emilys_candy"
-            android:text="Happiness is a pice of cake"
+            android:text="Happiness is a piece of cake"
             android:textAlignment="center"
             android:layout_gravity="center"
             android:textColor="@android:color/white"
